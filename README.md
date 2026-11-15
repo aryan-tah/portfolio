@@ -10,7 +10,7 @@ Most portfolio sites tell you someone is good at systems. I wanted this one to s
 
 ## What's on the page
 
-**Hero.** "I build systems real people run on," then a ledger of what that's meant in numbers: an election count that went from four days to five minutes, 160+ sign-ups in a day for Vennbee, a fly brain cut from 139,248 neurons to 316, a Kafka broker that runs as one binary, and more. Old numbers get struck out and new ones roll in on odometer wheels. The active row's progress bar is the timer; hover to pause, click any row to jump to it.
+**Hero.** "I build systems real people run on," then a ledger of what that's meant in numbers: an election count that went from four days to five minutes, 160+ sign-ups in a day for Vennbee, a fly brain cut from 139,248 neurons to 316, a Kafka broker that runs as one binary, and more. Old numbers get struck out and new ones roll in on odometer wheels. The active row's progress bar is the timer; click any row to jump to it.
 
 **Inside Vennbee.** In the Work section, "I build the search behind Vennbee": the highlighted word rolls through search, feed, moderation and real-time chat, and a diagram of Vennbee's backend lights that subsystem's request path.
 
