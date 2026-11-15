@@ -1,3 +1,13 @@
+/* Pollen by Nidheesh Vakharia (SIL OFL 1.1, see public/fonts/Pollen-OFL.txt),
+   subset to Latin. Axes: wght 400-700, ROND 0-100. */
+@font-face {
+  font-family: "Pollen";
+  src: url("/fonts/Pollen-Latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ---------------------------------------------------------------------------
    Tokens. One neutral base, ink, and a single accent kept to ~10% of the page.
    Four palettes, selected with data-palette on <html>. The site ships with
@@ -7,8 +17,8 @@
 :root {
   color-scheme: light dark;
 
-  --display: "Bricolage Grotesque", "Geist", ui-sans-serif, system-ui, sans-serif;
-  --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Pollen", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sans: "Pollen", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --gutter: clamp(16px, 4vw, 48px);
@@ -236,8 +246,7 @@ strong {
 .display {
   font-family: var(--display);
   font-weight: 500;
-  font-variation-settings: "opsz" 96;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.032em;
   line-height: 0.98;
   text-wrap: balance;
 }
@@ -547,9 +556,8 @@ strong {
   display: flex;
   font-family: var(--display);
   font-weight: 500;
-  font-variation-settings: "opsz" 96;
   font-size: clamp(76px, 12.5vw, 196px);
-  letter-spacing: -0.05em;
+  letter-spacing: -0.045em;
   line-height: 0.9;
   color: var(--ink);
   white-space: nowrap;

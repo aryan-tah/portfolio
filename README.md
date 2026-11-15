@@ -51,6 +51,7 @@ src/
     scene.ts          canvas renderer and the rebuild timeline
 public/
   favicon.svg
+  fonts/              Pollen, subset to Latin, and its OFL license
   og.png              social preview, captured from the hero
 ```
 
@@ -61,7 +62,7 @@ A few decisions worth knowing about:
 - **Each messy node names its fate.** In `graph.ts`, a node with `into: "search"` folds into the clean `search` node, and a node whose `into` is its own id survives and moves to its layered position. Merging nodes chase their target's current position, so the two move together.
 - **The canvas only runs while it's on screen.** An `IntersectionObserver` starts and stops the `requestAnimationFrame` loop. Device pixel ratio is capped at 2.
 - **Wide screens lay the clean design out left to right; phones lay it out top to bottom.** The same graph, with labels moved under the nodes.
-- **Type is Bricolage Grotesque for display, Geist for text and Geist Mono for labels.** **Colors live in CSS.** Each palette is defined in OKLCH and redefined for dark mode. The canvas reads the same custom properties, so the diagram follows the system theme.
+- **Type is [Pollen](https://github.com/nidheesh-m-vakharia/pollen) by Nidheesh Vakharia for everything but labels, which use Geist Mono.** Pollen is self-hosted from `public/fonts/`, subset to Latin (106 KB instead of 700 KB), with its SIL Open Font License alongside. **Colors live in CSS.** Each palette is defined in OKLCH and redefined for dark mode. The canvas reads the same custom properties, so the diagram follows the system theme.
 
 ## Accessibility
 
