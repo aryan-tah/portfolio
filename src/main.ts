@@ -27,6 +27,47 @@ function mountClock() {
 }
 
 // ---------------------------------------------------------------------------
+// Palette: ?palette=signal|cobalt|teal|honey overrides the default (cobalt, set on <html>). The switcher only shows on
+// localhost or when ?palette= is in the URL; it's for choosing, not for visitors.
+
+const PALETTES = [
+  ["cobalt", "oklch(0.5 0.23 264)"],
+  ["signal", "oklch(0.645 0.215 38)"],
+  ["teal", "oklch(0.56 0.11 190)"],
+  ["honey", "oklch(0.7 0.155 68)"],
+] as const;
+
+function mountPalette() {
+  const root = document.documentElement;
+  const params = new URLSearchParams(location.search);
+  const asked = params.get("palette");
+  if (asked && PALETTES.some(([n]) => n === asked)) root.dataset.palette = asked;
+  if (!asked && location.hostname !== "localhost") return;
+
+  const bar = document.createElement("div");
+  bar.className = "palette-switch";
+  bar.setAttribute("role", "group");
+  bar.setAttribute("aria-label", "Color palette");
+  const current = () => root.dataset.palette ?? "cobalt";
+  const buttons = PALETTES.map(([name, swatch]) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.innerHTML = `<i style="--sw:${swatch}"></i>${name}`;
+    b.addEventListener("click", () => {
+      root.dataset.palette = name;
+      params.set("palette", name);
+      history.replaceState(null, "", `?${params}${location.hash}`);
+      buttons.forEach((x, i) => x.setAttribute("aria-pressed", String(PALETTES[i][0] === name)));
+      window.dispatchEvent(new Event("palettechange"));
+    });
+    b.setAttribute("aria-pressed", String(name === current()));
+    bar.appendChild(b);
+    return b;
+  });
+  document.body.appendChild(bar);
+}
+
+// ---------------------------------------------------------------------------
 // Static sections rendered from content.ts
 
 function renderWork() {
@@ -286,6 +327,10 @@ function mountSwarm() {
 
   // Theme changes swap the canvas palette.
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => scene.readColors());
+  window.addEventListener("palettechange", () => {
+    scene.readColors();
+    if (!running) scene.draw(p, time);
+  });
 
   scene.resize();
   setState("idle");
@@ -293,6 +338,7 @@ function mountSwarm() {
 
 // ---------------------------------------------------------------------------
 
+mountPalette();
 renderWork();
 renderProjects();
 renderBackground();

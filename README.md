@@ -56,7 +56,7 @@ A few decisions worth knowing about:
 - **Each messy node names its fate.** In `graph.ts`, a node with `into: "search"` folds into the clean `search` node, and a node whose `into` is its own id survives and moves to its layered position. Merging nodes chase their target's current position, so the two move together.
 - **The canvas only runs while it's on screen.** An `IntersectionObserver` starts and stops the `requestAnimationFrame` loop. Device pixel ratio is capped at 2.
 - **Wide screens lay the clean design out left to right; phones lay it out top to bottom.** The same graph, with labels moved under the nodes.
-- **Colors live in CSS.** The palette is defined in OKLCH on `:root` and redefined for dark mode. The canvas reads the same custom properties, so the diagram follows the system theme.
+- **Colors live in CSS.** Each palette is defined in OKLCH and redefined for dark mode. The canvas reads the same custom properties, so the diagram follows the system theme.
 
 ## Accessibility
 
@@ -70,7 +70,7 @@ Fork it, then:
 
 1. Replace the copy in `src/content.ts` and the hero and contact text in `index.html`.
 2. Redraw the two architectures in `src/swarm/graph.ts`. The section's heading updates itself from the node counts.
-3. Change `--accent` in `src/styles.css`. It's the only saturated color on the page.
+3. Pick a palette. `src/styles.css` defines four (cobalt, signal, teal, honey), each with light and dark modes; set `data-palette` on `<html>` in `index.html`. On localhost a switcher in the bottom-right corner lets you compare them live. Each palette has one accent color and keeps it to small marks.
 4. Update the `og:image` URL in `index.html` and the source link in the footer.
 
 ## Deploy

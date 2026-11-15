@@ -1,10 +1,131 @@
 /* ---------------------------------------------------------------------------
-   Tokens. Warm drafting paper, ink, and one honey accent (Vennbee's bee).
+   Tokens. One neutral base, ink, and a single accent kept to ~10% of the page.
+   Four palettes, selected with data-palette on <html>. The site ships with
+   "cobalt"; "signal" is also the fallback when the attribute is missing.
    --------------------------------------------------------------------------- */
 
 :root {
   color-scheme: light dark;
 
+  --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --max: 1280px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* signal */
+:root,
+:root[data-palette="signal"] {
+  --paper: oklch(0.972 0.003 250);
+  --paper-2: oklch(0.945 0.004 250);
+  --ink: oklch(0.2 0.01 260);
+  --ink-2: oklch(0.36 0.012 260);
+  --muted: oklch(0.52 0.012 260);
+  --line: oklch(0.885 0.005 250);
+  --line-strong: oklch(0.64 0.01 255);
+  --accent: oklch(0.645 0.215 38);
+  --accent-ink: oklch(0.55 0.2 36);
+  --accent-wash: oklch(0.93 0.05 45);
+  --on-accent: oklch(0.18 0.02 40);
+  --warn: oklch(0.5 0.2 15);
+  --grid: oklch(0.85 0.006 250 / 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-palette]),
+  :root[data-palette="signal"] {
+    --paper: oklch(0.17 0.006 260);
+    --paper-2: oklch(0.205 0.008 260);
+    --ink: oklch(0.94 0.005 250);
+    --ink-2: oklch(0.82 0.008 250);
+    --muted: oklch(0.66 0.01 255);
+    --line: oklch(0.29 0.008 260);
+    --line-strong: oklch(0.5 0.01 258);
+    --accent: oklch(0.7 0.2 42);
+    --accent-ink: oklch(0.74 0.18 45);
+    --accent-wash: oklch(0.3 0.08 40);
+    --on-accent: oklch(0.18 0.02 40);
+    --warn: oklch(0.66 0.19 18);
+    --grid: oklch(0.3 0.008 260 / 0.6);
+  }
+}
+
+/* cobalt */
+:root[data-palette="cobalt"] {
+  --paper: oklch(0.968 0.007 90);
+  --paper-2: oklch(0.94 0.009 90);
+  --ink: oklch(0.22 0.03 265);
+  --ink-2: oklch(0.36 0.03 265);
+  --muted: oklch(0.52 0.02 265);
+  --line: oklch(0.885 0.008 90);
+  --line-strong: oklch(0.64 0.015 265);
+  --accent: oklch(0.5 0.23 264);
+  --accent-ink: oklch(0.48 0.22 264);
+  --accent-wash: oklch(0.92 0.04 264);
+  --on-accent: oklch(0.98 0.005 264);
+  --warn: oklch(0.6 0.19 35);
+  --grid: oklch(0.86 0.01 90 / 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-palette="cobalt"] {
+    --paper: oklch(0.17 0.02 265);
+    --paper-2: oklch(0.21 0.025 265);
+    --ink: oklch(0.94 0.008 90);
+    --ink-2: oklch(0.82 0.01 90);
+    --muted: oklch(0.67 0.015 265);
+    --line: oklch(0.3 0.025 265);
+    --line-strong: oklch(0.5 0.03 265);
+    --accent: oklch(0.68 0.17 262);
+    --accent-ink: oklch(0.74 0.14 262);
+    --accent-wash: oklch(0.3 0.08 264);
+    --on-accent: oklch(0.15 0.03 265);
+    --warn: oklch(0.7 0.17 40);
+    --grid: oklch(0.3 0.025 265 / 0.6);
+  }
+}
+
+/* teal */
+:root[data-palette="teal"] {
+  --paper: oklch(0.966 0.008 160);
+  --paper-2: oklch(0.94 0.01 160);
+  --ink: oklch(0.22 0.02 200);
+  --ink-2: oklch(0.36 0.02 200);
+  --muted: oklch(0.52 0.018 200);
+  --line: oklch(0.885 0.01 160);
+  --line-strong: oklch(0.64 0.015 195);
+  --accent: oklch(0.56 0.11 190);
+  --accent-ink: oklch(0.48 0.095 192);
+  --accent-wash: oklch(0.92 0.035 185);
+  --on-accent: oklch(0.98 0.01 185);
+  --warn: oklch(0.63 0.19 40);
+  --grid: oklch(0.86 0.012 160 / 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-palette="teal"] {
+    --paper: oklch(0.17 0.012 200);
+    --paper-2: oklch(0.21 0.015 200);
+    --ink: oklch(0.94 0.008 160);
+    --ink-2: oklch(0.82 0.01 160);
+    --muted: oklch(0.67 0.015 195);
+    --line: oklch(0.29 0.015 200);
+    --line-strong: oklch(0.5 0.02 195);
+    --accent: oklch(0.76 0.12 185);
+    --accent-ink: oklch(0.8 0.1 185);
+    --accent-wash: oklch(0.3 0.05 190);
+    --on-accent: oklch(0.17 0.02 200);
+    --warn: oklch(0.7 0.17 42);
+    --grid: oklch(0.3 0.015 200 / 0.6);
+  }
+}
+
+/* honey */
+:root[data-palette="honey"] {
   --paper: oklch(0.975 0.008 85);
   --paper-2: oklch(0.952 0.011 82);
   --ink: oklch(0.23 0.014 70);
@@ -18,19 +139,10 @@
   --on-accent: oklch(0.2 0.02 70);
   --warn: oklch(0.58 0.18 32);
   --grid: oklch(0.86 0.012 80 / 0.55);
-
-  --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
-  --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
-
-  --gutter: clamp(16px, 4vw, 48px);
-  --max: 1280px;
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root[data-palette="honey"] {
     --paper: oklch(0.175 0.009 70);
     --paper-2: oklch(0.21 0.01 70);
     --ink: oklch(0.93 0.01 85);
@@ -41,6 +153,7 @@
     --accent: oklch(0.8 0.145 75);
     --accent-ink: oklch(0.82 0.13 76);
     --accent-wash: oklch(0.3 0.05 70);
+    --on-accent: oklch(0.2 0.02 70);
     --warn: oklch(0.7 0.16 34);
     --grid: oklch(0.32 0.01 72 / 0.55);
   }
@@ -80,7 +193,7 @@ body {
 
 ::selection {
   background: var(--accent);
-  color: oklch(0.2 0.02 70);
+  color: var(--on-accent);
 }
 
 a {
@@ -1396,4 +1509,49 @@ input[type="range"]::-moz-range-thumb {
     opacity: 1;
     transform: none;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Palette switcher (localhost or ?palette= only, for picking a palette)
+   --------------------------------------------------------------------------- */
+
+.palette-switch {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 60;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  box-shadow: 0 6px 24px oklch(0 0 0 / 0.12);
+}
+
+.palette-switch button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px 0 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  font: 500 12px/1 var(--mono);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.palette-switch button[aria-pressed="true"] {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+.palette-switch i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--sw);
 }
