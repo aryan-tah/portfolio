@@ -162,7 +162,7 @@ export const education = {
   dates: "2023 to 2027",
   focus: "Systems programming, machine learning, software architecture",
   honors: "Dean's Honors List · Achievement Scholarship · Payne Award · AWS Certified Cloud Practitioner",
-  offClock: "2131 blitz on Chess.com, 99.7th percentile. UCR Chess Club.",
+  offClock: "2131 blitz on Chess.com, 99.7th percentile.",
 };
 
 export const stack = {

@@ -1439,8 +1439,8 @@ strong {
   flex-wrap: wrap;
   align-content: flex-start;
   gap: 6px;
-  /* Room for two rows, so the card doesn't jump as chips arrive. */
-  min-height: 66px;
+  /* Room for three rows, so the card doesn't jump as chips arrive. */
+  min-height: 102px;
 }
 
 .fchip {
@@ -1484,6 +1484,13 @@ strong {
 
 .fchip[data-kind="text"] {
   border-style: dashed;
+}
+
+.fchip[data-kind="dropped"] {
+  border-style: dashed;
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--warn);
 }
 
 @keyframes chip-in {
