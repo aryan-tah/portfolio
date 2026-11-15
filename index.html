@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Aryan Tah · Backend engineer</title>
+    <meta
+      name="description"
+      content="Aryan Tah is a backend engineer and co-founder of Vennbee. Search, feeds, moderation and real-time chat on PostgreSQL, pgvector, Redis and BullMQ."
+    />
+    <meta name="author" content="Aryan Tah" />
+    <meta name="theme-color" content="#f8f5ef" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#16130f" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Aryan Tah · Backend engineer" />
+    <meta
+      property="og:description"
+      content="I design systems, then take parts away. Scroll a swarm of agents through a tangled backend and watch it rebuild."
+    />
+    <meta property="og:image" content="https://aryan-tah.github.io/portfolio/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+    />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="nav">
+      <a class="nav-mark" href="#top" aria-label="Aryan Tah, back to top">
+        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+          <rect x="1.5" y="1.5" width="7" height="7" />
+          <rect x="11.5" y="11.5" width="7" height="7" />
+          <path d="M8.5 5h6.5v6.5" />
+        </svg>
+        <span>Aryan Tah</span>
+      </a>
+      <nav aria-label="Sections">
+        <a href="#swarm">Rebuild</a>
+        <a href="#work">Work</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <span class="nav-clock mono" aria-label="Local time in Riverside, California"><span data-clock>--:--</span> PT</span>
+    </header>
+
+    <main id="main">
+      <!-- Hero -------------------------------------------------------------->
+      <section class="hero sheet" id="top" data-sheet="01">
+        <div class="hero-copy">
+          <p class="eyebrow mono">Backend engineer · Co-founder, Vennbee</p>
+          <h1 class="display">I design systems, <em>then take parts away.</em></h1>
+          <p class="lede">
+            I'm Aryan. At <a href="https://vennbee.com" rel="noopener">Vennbee</a> I own the backend: search, feed,
+            moderation and real-time chat. I study computer science at UC Riverside and graduate in 2027.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#swarm">
+              Watch the rebuild
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" /></svg>
+            </a>
+            <a class="btn" href="mailto:aryan.tah7@gmail.com">aryan.tah7@gmail.com</a>
+          </div>
+        </div>
+
+        <figure class="trace" aria-label="Request trace waterfall, cycling through example Vennbee requests">
+          <figcaption class="trace-head mono">
+            <span class="trace-req" data-trace-req>GET /v1/feed</span>
+            <span class="trace-meta"><span data-trace-status>200</span> · <span data-trace-total>16.0</span> ms</span>
+          </figcaption>
+          <div class="trace-axis mono" aria-hidden="true"><span>0</span><span data-trace-mid></span><span data-trace-end></span></div>
+          <ol class="trace-rows" data-trace-rows></ol>
+          <p class="trace-foot mono">
+            <span class="trace-dots" data-trace-dots aria-hidden="true"></span>
+            Illustrative spans from Vennbee's request paths
+          </p>
+        </figure>
+      </section>
+
+      <!-- Swarm rebuild ------------------------------------------------------>
+      <section class="swarm" id="swarm" aria-labelledby="swarm-title">
+        <div class="swarm-stage">
+          <div class="swarm-head">
+            <p class="eyebrow mono">02 · Swarm rebuild</p>
+            <h2 id="swarm-title" class="display">A backend with 39 services. It needs 14.</h2>
+          </div>
+
+          <div class="swarm-canvas-wrap">
+            <canvas class="swarm-canvas" data-swarm-canvas aria-hidden="true"></canvas>
+            <div class="swarm-tip" data-swarm-tip role="status" hidden></div>
+            <span class="crop crop-tl" aria-hidden="true"></span>
+            <span class="crop crop-tr" aria-hidden="true"></span>
+            <span class="crop crop-bl" aria-hidden="true"></span>
+            <span class="crop crop-br" aria-hidden="true"></span>
+          </div>
+
+          <aside class="swarm-panel">
+            <ol class="phases" data-phases>
+              <li data-phase="tangle">
+                <span class="mono">01</span>
+                <div>
+                  <strong>Tangle</strong>
+                  <p>A v0 that grew one fix at a time. Two search services, four moderation services, a poller nobody turned off.</p>
+                </div>
+              </li>
+              <li data-phase="swarm">
+                <span class="mono">02</span>
+                <div>
+                  <strong>Swarm</strong>
+                  <p>Agents fan out and read every service. Each one gets a verdict: keep it, merge it, or delete it.</p>
+                </div>
+              </li>
+              <li data-phase="rebuild">
+                <span class="mono">03</span>
+                <div>
+                  <strong>Rebuild</strong>
+                  <p>Duplicates fold into the service that should own them. Dead edges get cut. Survivors move into layers.</p>
+                </div>
+              </li>
+              <li data-phase="ship">
+                <span class="mono">04</span>
+                <div>
+                  <strong>Ship</strong>
+                  <p>Clients, one gateway, five services, one queue, three stores. Requests take the short way.</p>
+                </div>
+              </li>
+            </ol>
+
+            <dl class="stats mono" data-stats>
+              <div><dt>services</dt><dd data-stat="services">39</dd></div>
+              <div><dt>connections</dt><dd data-stat="edges">0</dd></div>
+              <div><dt>edge crossings</dt><dd data-stat="crossings">0</dd></div>
+              <div><dt>duplicate or dead</dt><dd data-stat="waste">0</dd></div>
+            </dl>
+
+            <ol class="log mono" data-log aria-live="off"></ol>
+          </aside>
+
+          <div class="swarm-progress" aria-hidden="true"><span data-swarm-bar></span></div>
+          <p class="swarm-hint mono" data-swarm-hint>Scroll to run the swarm · hover a node</p>
+        </div>
+      </section>
+
+      <!-- Work -------------------------------------------------------------->
+      <section class="work sheet" id="work" data-sheet="03" aria-labelledby="work-title">
+        <header class="section-head">
+          <p class="eyebrow mono">03 · Work</p>
+          <h2 id="work-title" class="display">Where the systems came from.</h2>
+        </header>
+        <div class="roles" data-roles></div>
+
+        <div class="hybrid" aria-labelledby="hybrid-title">
+          <div class="hybrid-copy">
+            <p class="eyebrow mono">One piece of it</p>
+            <h3 id="hybrid-title">Hybrid search, as one slider</h3>
+            <p>
+              Keyword search finds “climbing” when you type “climbing”. Describe a community the way you’d describe
+              it to a friend and only vector similarity finds it. Vennbee blends the two in a single Postgres query. Drag
+              the slider to move the blend.
+            </p>
+            <p class="fine mono">
+              Toy version. Keyword scores are computed live from the text; semantic scores are precomputed.
+            </p>
+          </div>
+
+          <div class="hybrid-ui">
+            <div class="queries" role="radiogroup" aria-label="Example search" data-queries></div>
+            <label class="blend mono">
+              <span>keyword</span>
+              <input type="range" min="0" max="100" value="60" data-alpha aria-label="Blend between keyword and semantic scoring" />
+              <span>semantic</span>
+              <output data-alpha-out>α 0.60</output>
+            </label>
+            <p class="legend mono" aria-hidden="true">
+              <span><i style="background: var(--ink)"></i>keyword share</span>
+              <span><i style="background: var(--accent)"></i>semantic share</span>
+            </p>
+            <ol class="results" data-results></ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects ---------------------------------------------------------->
+      <section class="projects sheet" id="projects" data-sheet="04" aria-labelledby="projects-title">
+        <header class="section-head">
+          <p class="eyebrow mono">04 · Projects</p>
+          <h2 id="projects-title" class="display">Things I built to find out.</h2>
+        </header>
+        <ol class="index" data-projects></ol>
+      </section>
+
+      <!-- Background -------------------------------------------------------->
+      <section class="background sheet" data-sheet="05" aria-labelledby="bg-title">
+        <header class="section-head">
+          <p class="eyebrow mono">05 · Background</p>
+          <h2 id="bg-title" class="display">Tools and school.</h2>
+        </header>
+        <div class="bg-grid" data-background></div>
+      </section>
+    </main>
+
+    <footer class="contact sheet" id="contact" data-sheet="06">
+      <p class="eyebrow mono">06 · Contact</p>
+      <h2 class="display">Have a system with too many parts?</h2>
+      <a class="contact-mail" href="mailto:aryan.tah7@gmail.com">aryan.tah7@gmail.com</a>
+      <ul class="contact-links mono">
+        <li><a href="https://github.com/aryan-tah" rel="noopener">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/aryan-tah-8b5916221/" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://vennbee.com" rel="noopener">Vennbee</a></li>
+      </ul>
+      <p class="colophon mono">
+        Built from scratch with TypeScript and Canvas, no framework.
+        <a href="https://github.com/aryan-tah/portfolio" rel="noopener">Source on GitHub</a>, MIT licensed.
+      </p>
+    </footer>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
