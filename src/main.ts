@@ -138,7 +138,7 @@ function mountSwarm() {
 
   // The rebuild plays on its own once the diagram is fully in view, pauses if it
   // leaves, and the clean system keeps running traffic after it finishes.
-  const DURATION = 10; // seconds, start to finish
+  const DURATION = 6.5; // seconds, start to finish
   const playBtn = $<HTMLButtonElement>("[data-swarm-play]");
   let p = 0;
   let running = false; // render loop (any part of the section on screen)
