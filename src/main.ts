@@ -1,6 +1,7 @@
 import "./styles.css";
 import { education, experience, projects, stack } from "./content";
 import { applyBackdrop, watchBackdropResize } from "./backdrop";
+import { mountCases } from "./cases";
 import { mountForager } from "./forager";
 import { mountImpact } from "./impact";
 import { mountSystem } from "./system";
@@ -362,4 +363,5 @@ mountClock();
 mountImpact($("[data-impact]"), reduced);
 mountSystem($("[data-vb]"), reduced);
 mountForager($(".forager"), reduced);
+mountCases($("[data-cases]"), reduced);
 mountSwarm();

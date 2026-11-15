@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en" data-palette="cobalt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Moderation case study · Aryan Tah</title>
+    <meta name="description" content="How I approached moderation for Vennbee: covering every kind of user content to meet Apple&#x27;s rules, without punishing people for their own names." />
+    <meta name="author" content="Aryan Tah" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Moderation case study" />
+    <meta property="og:description" content="How I approached moderation for Vennbee: covering every kind of user content to meet Apple&#x27;s rules, without punishing people for their own names." />
+    <meta property="og:image" content="https://aryantah.com/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="../fonts/Pollen-Latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" />
+  </head>
+  <body class="cs-page">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="nav">
+      <a class="nav-mark" href="../" aria-label="Aryan Tah, home">
+        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+          <rect x="1.5" y="1.5" width="7" height="7" />
+          <rect x="11.5" y="11.5" width="7" height="7" />
+          <path d="M8.5 5h6.5v6.5" />
+        </svg>
+        <span>Aryan Tah</span>
+      </a>
+      <nav aria-label="Site">
+        <a class="nav-vb" href="https://vennbee.com" rel="noopener"><img class="vlogo" src="../vennbee.png" alt="" width="16" height="16" /><span>Vennbee</span></a>
+        <a href="../#cases">Case studies</a>
+        <a href="../#projects">Projects</a>
+        <a href="../#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main" class="cs">
+      <header class="cs-head">
+        <p class="eyebrow mono">Case study · <a class="vlink" href="https://vennbee.com" rel="noopener"><img class="vlogo" src="../vennbee.png" alt="" width="16" height="16" />Vennbee</a> · 2026</p>
+        <h1 class="display cs-title">Moderation that keeps a new social network clean without banning Harshit.</h1>
+        <p class="cs-lede">Apple won't ship a social app until every kind of user content can be filtered, reported and acted on. When we started, Vennbee only checked posts. I led the work to cover everything else, without treating people's real names as offensive.</p>
+        <dl class="cs-meta"><div><dt class="mono">Role</dt><dd>Built most of it. Nidheesh Vakharia built parts of reporting.</dd></div><div><dt class="mono">Timeline</dt><dd>Post checks in March 2026; full coverage before App Review.</dd></div><div><dt class="mono">Stack</dt><dd>NestJS, PostgreSQL, background workers and an AI moderation model.</dd></div></dl>
+      </header>
+
+      <dl class="cs-stats"><div><dt class="mono">hosts on the link blocklist</dt><dd>41,861</dd><span class="mono">up from 6 typed by hand</span></div><div><dt class="mono">kind of user content covered</dt><dd>Every</dd><span class="mono">names, bios, posts, spaces, links</span></div><div><dt class="mono">on every surface</dt><dd>Report</dd><span class="mono">as App Review expects</span></div><div><dt class="mono">in Vennbee today</dt><dd>Live</dd></div></dl>
+
+      <section class="cs-section" aria-labelledby="s1">
+        <p class="eyebrow mono">01</p>
+        <h2 id="s1" class="display">Only posts were covered.</h2>
+        <div class="cs-body"><p>Our first moderation checked posts: captions, images, video and audio. Everything else a person could type, like names, bios, community names and links, went public as soon as it was saved, and not every surface had a way to report it.</p><p>Before submitting to the App Store, I listed every place someone could type something, and checked which were covered. Most weren't. That list became the plan.</p></div>
+      </section>
+      <section class="cs-section" aria-labelledby="s2">
+        <p class="eyebrow mono">02</p>
+        <h2 id="s2" class="display">What it had to get right.</h2>
+        <ul class="cs-list"><li><strong>Real names aren't slurs.</strong> Harshit contains a swear word. So do plenty of surnames. A filter that bans people for their own names is worse than no filter.</li><li><strong>Signups can't break.</strong> Moderation can't become the reason someone can't create an account.</li><li><strong>Cheap enough to check everything.</strong> Every name and bio, every time it changes, on a pre-revenue budget.</li><li><strong>Reuse what we have.</strong> No second pipeline: the same workers and queues the app already runs.</li></ul>
+      </section>
+      <section class="cs-section" aria-labelledby="s3">
+        <p class="eyebrow mono">03</p>
+        <h2 id="s3" class="display">The principles.</h2>
+
+        <article class="cs-decision">
+          <h3><span class="mono">A</span>A person decides the borderline cases.</h3>
+          <p>Clear-cut content is handled automatically. Anything ambiguous goes to a human, because most of what an automatic filter catches in names is a false positive.</p>
+          <p class="cs-cost"><span class="mono">Tradeoff</span>Review takes people's time. It's still cheaper than wrongly banning someone on day one.</p>
+        </article>
+        <article class="cs-decision">
+          <h3><span class="mono">B</span>Consistent everywhere.</h3>
+          <p>The same standard applies to a name, a bio, a post or an image, so content doesn't pass in one place and fail in another.</p>
+          <p class="cs-cost"><span class="mono">Tradeoff</span>We passed on cheaper options that would have used different rules for different content.</p>
+        </article>
+        <article class="cs-decision">
+          <h3><span class="mono">C</span>Never say the word back.</h3>
+          <p>When something is rejected, the message says so without repeating what was offensive.</p>
+          <p class="cs-cost"><span class="mono">Mistake</span>An early version echoed the offending word in the error. It was fixed the same day.</p>
+        </article>
+        <article class="cs-decision">
+          <h3><span class="mono">D</span>Built for review, not just detection.</h3>
+          <p>Every report and decision lands in a dashboard with an audit trail, so a human can see what happened and why.</p>
+          <p class="cs-cost"><span class="mono">Why</span>Moderation that nobody can inspect is moderation nobody can trust or fix.</p>
+        </article>
+      </section>
+      <section class="cs-section" aria-labelledby="s4">
+        <p class="eyebrow mono">04</p>
+        <h2 id="s4" class="display">What I learned.</h2>
+        <ul class="cs-list"><li><strong>Count the surfaces first.</strong> The list of every place a person can type something was the most useful document in the project.</li><li><strong>Every exception is a decision.</strong> Allowing one name is easy; making sure that rule doesn't open a hole elsewhere is the real work.</li><li><strong>Plan for your vendors to change.</strong> AI models get retired. Moderation that depends on one needs alerts for when it stops working.</li></ul>
+      </section>
+
+      <footer class="cs-foot">
+        <p class="fine mono">Vennbee is live, so this write-up stays at the level of principles. How the checks work stays private, on purpose.</p>
+        <div class="cs-foot-links">
+          <a class="btn btn-primary" href="https://vennbee.com" rel="noopener"><img class="vlogo" src="../vennbee.png" alt="" width="18" height="18" />Try Vennbee</a>
+          <a class="btn" href="../#cases">All case studies</a>
+          <a class="btn btn-quiet" href="mailto:aryan@vennbee.com">aryan@vennbee.com</a>
+        </div>
+      </footer>
+    </main>
+
+    <script type="module" src="../src/case.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" data-palette="cobalt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Camus case study · Aryan Tah</title>
+    <meta name="description" content="Contributing to Camus, a Kafka-compatible broker in Rust backed by Cloudflare R2: making its cost measurable." />
+    <meta name="author" content="Aryan Tah" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Camus case study" />
+    <meta property="og:description" content="Contributing to Camus, a Kafka-compatible broker in Rust backed by Cloudflare R2: making its cost measurable." />
+    <meta property="og:image" content="https://aryantah.com/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="../fonts/Pollen-Latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" />
+  </head>
+  <body class="cs-page">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="nav">
+      <a class="nav-mark" href="../" aria-label="Aryan Tah, home">
+        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+          <rect x="1.5" y="1.5" width="7" height="7" />
+          <rect x="11.5" y="11.5" width="7" height="7" />
+          <path d="M8.5 5h6.5v6.5" />
+        </svg>
+        <span>Aryan Tah</span>
+      </a>
+      <nav aria-label="Site">
+        <a class="nav-vb" href="https://vennbee.com" rel="noopener"><img class="vlogo" src="../vennbee.png" alt="" width="16" height="16" /><span>Vennbee</span></a>
+        <a href="../#cases">Case studies</a>
+        <a href="../#projects">Projects</a>
+        <a href="../#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main" class="cs">
+      <header class="cs-head">
+        <p class="eyebrow mono">Case study · Open-source contribution · November 2026</p>
+        <h1 class="display cs-title">Making a Kafka broker's cloud bill something you can measure.</h1>
+        <p class="cs-lede">Camus is a broker that speaks Apache Kafka's protocol in one Rust binary and keeps its log in Cloudflare R2: no JVM, no ZooKeeper. Its design included a cost model for R2, but nothing measured it. I contributed the metrics that do, and wrote proposals for what a team would need next. Camus is Nidheesh Vakharia's project; this is about my part.</p>
+        <dl class="cs-meta"><div><dt class="mono">Role</dt><dd>Contributor: one issue, two merged pull requests, two RFCs and five proposals.</dd></div><div><dt class="mono">Timeline</dt><dd>November 12, 2026.</dd></div><div><dt class="mono">Stack</dt><dd>Rust, the Kafka wire protocol, Cloudflare R2, Prometheus, Grafana.</dd></div></dl>
+      </header>
+
+      <dl class="cs-stats"><div><dt class="mono">pull requests merged</dt><dd>2</dd><span class="mono">+212 / −24 lines</span></div><div><dt class="mono">fixed object-store counters</dt><dd>8</dd><span class="mono">no per-key labels</span></div><div><dt class="mono">flaky tests fixed</dt><dd>2</dd><span class="mono">30 failover runs, 0 failures</span></div><div><dt class="mono">RFCs opened</dt><dd>2</dd><span class="mono">scaling and quotas</span></div></dl>
+
+      <section class="cs-section" aria-labelledby="s1">
+        <p class="eyebrow mono">01</p>
+        <h2 id="s1" class="display">Three questions nobody could answer.</h2>
+        <div class="cs-body"><p>Anyone running a message broker asks three things first. How far behind is each consumer? How far behind is the uploader? And for a broker that stores everything in R2: how many paid requests are we sending, and what will that cost?</p><p>Camus exported about a dozen metrics, none of which answered those. Its design notes had a cost model for R2 requests, but nothing in the running system measured it. I wrote that up as an issue, then fixed it.</p></div>
+      </section>
+      <section class="cs-section" aria-labelledby="s2">
+        <p class="eyebrow mono">02</p>
+        <h2 id="s2" class="display">What I built.</h2>
+
+        <article class="cs-decision">
+          <h3><span class="mono">A</span>Count every object-store call.</h3>
+          <p>Puts, gets, heads, lists and deletes, plus errors and bytes in and out, exported as eight fixed counters. A retry or a paged list counts as one call, so the numbers match what R2 bills.</p>
+          <p class="cs-cost"><span class="mono">Why fixed</span>No per-key or per-object labels. Metrics with unbounded labels are how monitoring takes down the thing it's monitoring.</p>
+        </article>
+        <article class="cs-decision">
+          <h3><span class="mono">B</span>Show every write-ahead-log shard.</h3>
+          <p>Unsealed bytes, leadership and storage failure, for every shard. Before, only the first shard's numbers existed, and only in an admin JSON endpoint.</p>
+          <p class="cs-cost"><span class="mono">Bounded</span>One series per shard, and the shard count is fixed when the cluster starts.</p>
+        </article>
+        <article class="cs-decision">
+          <h3><span class="mono">C</span>Fix the tests that were already failing.</h3>
+          <p>Two tests were flaky on CI and failing on main: a write after a leader election, and a consumer group rebalance. I fixed both in the same pull request.</p>
+          <p class="cs-cost"><span class="mono">Proof</span>Ran the failover test 30 times with no failures before calling it fixed.</p>
+        </article>
+      </section>
+      <section class="cs-section" aria-labelledby="s3">
+        <p class="eyebrow mono">03</p>
+        <h2 id="s3" class="display">What I proposed next.</h2>
+        <ul class="cs-list"><li><strong>Scaling without moving partitions by hand.</strong> An RFC on adding and removing brokers, and what storing data in R2 makes cheap that Kafka makes expensive.</li><li><strong>Quotas and per-team usage.</strong> An RFC for per-principal limits and usage numbers, which any shared or hosted cluster needs.</li><li><strong>Operability.</strong> Proposals for a Helm chart, a rolling-upgrade test under load, a restore drill, a cost calculator, and testing popular Kafka web consoles against Camus.</li></ul>
+      </section>
+      <section class="cs-section" aria-labelledby="s4">
+        <p class="eyebrow mono">04</p>
+        <h2 id="s4" class="display">What I learned.</h2>
+        <ul class="cs-list"><li><strong>Read the cost model before the code.</strong> The most useful metric was the one the design already promised.</li><li><strong>Leave the build greener than you found it.</strong> A metrics PR that also fixes two failing tests gets reviewed faster.</li><li><strong>Ask the operator's questions.</strong> Lag, upload lag and cost are what someone on call needs at 3am. Start there, not with whatever is easy to count.</li></ul>
+      </section>
+
+      <footer class="cs-foot">
+        <p class="fine mono">Camus is by Nidheesh Vakharia, Apache-2.0. My contributions are pull requests #183 and #184 and issues #170 to #179.</p>
+        <div class="cs-foot-links">
+          <a class="btn btn-primary" href="https://github.com/nidheesh-m-vakharia/camus" rel="noopener">Camus on GitHub</a>
+          <a class="btn" href="../#cases">All case studies</a>
+          <a class="btn btn-quiet" href="mailto:aryan@vennbee.com">aryan@vennbee.com</a>
+        </div>
+      </footer>
+    </main>
+
+    <script type="module" src="../src/case.ts"></script>
+  </body>
+</html>
