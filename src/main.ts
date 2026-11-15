@@ -132,7 +132,7 @@ function mountSwarm() {
   const small = window.innerWidth < 720;
   // ?agents=dots draws the swarm as dots instead of cursors.
   const dots = new URLSearchParams(location.search).get("agents") === "dots";
-  const scene = new SwarmScene(canvas, dots ? (small ? 130 : 240) : small ? 22 : 40);
+  const scene = new SwarmScene(canvas, small ? 16 : 39);
   scene.agentStyle = dots ? "dot" : "cursor";
   scene.reduced = reduced;
 
