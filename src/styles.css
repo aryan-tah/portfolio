@@ -21,6 +21,17 @@
   --sans: "Pollen", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
+  /* Type scale. Three heading sizes and six text sizes; nothing else. */
+  --fs-d1: clamp(44px, 5.6vw, 84px); /* page: hero, contact */
+  --fs-d2: clamp(34px, 3.9vw, 56px); /* section titles */
+  --fs-d3: clamp(24px, 2.2vw, 32px); /* block titles, project names */
+  --fs-xl: 24px; /* role names, stat values */
+  --fs-lg: 18px; /* lead paragraphs */
+  --fs-base: 16px; /* body, buttons */
+  --fs-sm: 14px; /* notes, chips, secondary copy */
+  --fs-xs: 12px; /* mono labels */
+  --fs-2xs: 11px; /* smallest mono meta */
+
   --gutter: clamp(16px, 4vw, 48px);
   --max: 1280px;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -193,7 +204,7 @@ body {
   background-size: 24px 24px;
   color: var(--ink);
   font-family: var(--sans);
-  font-size: 16px;
+  font-size: var(--fs-base);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -267,7 +278,7 @@ strong {
 }
 
 .eyebrow {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--muted);
   letter-spacing: 0.01em;
 }
@@ -304,7 +315,7 @@ strong {
   right: var(--gutter);
   top: clamp(28px, 4vw, 44px);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   color: var(--muted);
   letter-spacing: 0.04em;
 }
@@ -335,7 +346,7 @@ strong {
 }
 
 .section-head .display {
-  font-size: clamp(34px, 4.6vw, 60px);
+  font-size: var(--fs-d2);
   max-width: 18ch;
 }
 
@@ -364,7 +375,7 @@ strong {
   align-items: center;
   gap: 10px;
   font-weight: 500;
-  font-size: 15px;
+  font-size: var(--fs-base);
   text-decoration: none;
 }
 
@@ -387,7 +398,7 @@ strong {
 
 .nav nav a {
   padding: 8px 10px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--ink-2);
   text-decoration: none;
   border-radius: 6px;
@@ -402,7 +413,7 @@ strong {
 }
 
 .nav-clock {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--muted);
   font-variant-numeric: tabular-nums;
   min-width: 7ch;
@@ -412,7 +423,7 @@ strong {
 @media (max-width: 640px) {
   .nav { gap: 8px; }
   .nav-clock { display: none; }
-  .nav nav a { padding: 8px 7px; font-size: 13px; }
+  .nav nav a { padding: 8px 7px; font-size: var(--fs-sm); }
   .nav nav a[href="#contact"] { display: none; }
 }
 
@@ -428,7 +439,7 @@ strong {
   padding: 0 18px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
-  font-size: 15px;
+  font-size: var(--fs-base);
   font-weight: 500;
   text-decoration: none;
   color: var(--ink);
@@ -485,7 +496,7 @@ strong {
 }
 
 .hero-title {
-  font-size: clamp(40px, 5.4vw, 84px);
+  font-size: var(--fs-d1);
   line-height: 0.95;
 }
 
@@ -518,7 +529,7 @@ strong {
 }
 
 .impact-kicker {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--accent-ink);
 }
 
@@ -528,7 +539,7 @@ strong {
   margin-top: 14px;
   font-family: var(--display);
   font-weight: 500;
-  font-size: clamp(22px, 2.6vw, 36px);
+  font-size: var(--fs-d3);
   letter-spacing: -0.03em;
   line-height: 1;
   color: var(--muted);
@@ -596,7 +607,7 @@ strong {
 .impact-line {
   max-width: 50ch;
   margin-top: 16px;
-  font-size: clamp(16px, 1.3vw, 18px);
+  font-size: var(--fs-lg);
   line-height: 1.5;
   color: var(--ink-2);
   text-wrap: pretty;
@@ -649,9 +660,9 @@ strong {
   -webkit-tap-highlight-color: transparent;
 }
 
-.ix-n { font-size: 11px; }
-.ix-name { font-size: 15px; font-weight: 500; }
-.ix-val { font-size: 13px; font-variant-numeric: tabular-nums; }
+.ix-n { font-size: var(--fs-2xs); }
+.ix-name { font-size: var(--fs-base); font-weight: 500; }
+.ix-val { font-size: var(--fs-xs); font-variant-numeric: tabular-nums; }
 
 .impact-index button[data-active] {
   color: var(--ink);
@@ -705,7 +716,7 @@ strong {
 .btn-quiet {
   border-color: transparent;
   font-family: var(--mono);
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   color: var(--ink-2);
 }
 
@@ -732,7 +743,7 @@ strong {
   .impact { grid-template-columns: minmax(0, 1fr); align-items: start; }
   .impact-stage { min-height: 0; }
   .impact-side > .eyebrow { display: none; }
-  .ix-name { font-size: 14px; }
+  .ix-name { font-size: var(--fs-sm); }
 }
 
 /* ---------------------------------------------------------------------------
@@ -754,7 +765,7 @@ strong {
 }
 
 .vb-title {
-  font-size: clamp(32px, 3.8vw, 56px);
+  font-size: var(--fs-d3);
   line-height: 1;
 }
 
@@ -803,7 +814,7 @@ strong {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   color: var(--muted);
 }
 
@@ -822,7 +833,7 @@ strong {
   border-radius: 999px;
   background: transparent;
   color: var(--muted);
-  font: 500 11.5px/1 var(--mono);
+  font: 500 var(--fs-xs)/1 var(--mono);
   cursor: pointer;
   transition: background-color 150ms ease, color 150ms ease;
   -webkit-tap-highlight-color: transparent;
@@ -913,7 +924,7 @@ strong {
   stroke-width: 4px;
   stroke-linejoin: round;
   paint-order: stroke;
-  font: 500 11px var(--mono);
+  font: 500 var(--fs-2xs) var(--mono);
   transition: fill 260ms ease;
 }
 
@@ -928,7 +939,7 @@ strong {
 .system-note {
   min-height: 3em;
   max-width: 52ch;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   line-height: 1.5;
   color: var(--ink-2);
   text-wrap: pretty;
@@ -963,15 +974,12 @@ strong {
 
 .swarm-head {
   grid-area: head;
-  display: flex;
-  align-items: baseline;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: 8px 24px;
+  display: grid;
+  gap: 12px;
 }
 
 .swarm-head .display {
-  font-size: clamp(24px, 2.8vw, 38px);
+  font-size: var(--fs-d2);
 }
 
 .swarm-canvas-wrap {
@@ -996,7 +1004,7 @@ strong {
   background: var(--paper);
   border: 1px solid var(--ink);
   box-shadow: 4px 4px 0 var(--line);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   line-height: 1.45;
   pointer-events: none;
   transform-origin: top left;
@@ -1007,7 +1015,7 @@ strong {
   display: block;
   margin-bottom: 4px;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 500;
 }
 
@@ -1045,19 +1053,19 @@ strong {
 }
 
 .phases li > .mono {
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   padding-top: 3px;
 }
 
 .phases strong {
   font-weight: 500;
-  font-size: 15px;
+  font-size: var(--fs-base);
 }
 
 .phases p {
   display: grid;
   grid-template-rows: 0fr;
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   line-height: 1.45;
   color: var(--ink-2);
   opacity: 0;
@@ -1098,13 +1106,13 @@ strong {
 }
 
 .stats dt {
-  font-size: 10.5px;
+  font-size: var(--fs-2xs);
   color: var(--muted);
 }
 
 .stats dd {
   margin: 2px 0 0;
-  font-size: 22px;
+  font-size: var(--fs-xl);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
@@ -1121,7 +1129,7 @@ strong {
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   line-height: 1.4;
   color: var(--muted);
   mask-image: linear-gradient(to bottom, transparent, #000 40%);
@@ -1164,7 +1172,7 @@ strong {
   border-radius: 999px;
   background: var(--paper);
   color: var(--ink);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   cursor: pointer;
   transition: border-color 150ms ease, background-color 150ms ease, scale 150ms var(--ease-out);
   -webkit-tap-highlight-color: transparent;
@@ -1193,7 +1201,7 @@ strong {
 
 .swarm-hint {
   flex: none;
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   color: var(--muted);
   transition: opacity 300ms ease;
 }
@@ -1218,11 +1226,11 @@ strong {
   .swarm-panel { gap: 10px; }
   .phases li:not([data-active]) { display: none; }
   .phases li { border-top: 0; padding: 0; }
-  .phases p { font-size: 13px; }
+  .phases p { font-size: var(--fs-sm); }
   .stats { grid-template-columns: repeat(4, 1fr); }
   .stats div { padding: 6px 8px; }
-  .stats dt { font-size: 9.5px; line-height: 1.2; }
-  .stats dd { font-size: 17px; }
+  .stats dt { font-size: var(--fs-2xs); line-height: 1.2; }
+  .stats dd { font-size: var(--fs-lg); }
   .log { display: none; }
   .swarm-hint { display: none; }
 }
@@ -1251,7 +1259,7 @@ strong {
   display: grid;
   align-content: start;
   gap: 4px;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   color: var(--muted);
 }
 
@@ -1260,7 +1268,7 @@ strong {
 }
 
 .role h3 {
-  font-size: 22px;
+  font-size: var(--fs-xl);
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.25;
@@ -1303,7 +1311,7 @@ strong {
   gap: 6px 14px;
   margin-top: 16px;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--muted);
 }
 
@@ -1330,7 +1338,7 @@ strong {
 }
 
 .forager-copy h3 {
-  font-size: clamp(26px, 2.8vw, 38px);
+  font-size: var(--fs-d3);
   line-height: 1.04;
 }
 
@@ -1346,7 +1354,7 @@ strong {
   margin: 4px 0 0;
   padding: 0;
   list-style: none;
-  font-size: 14.5px;
+  font-size: var(--fs-sm);
   color: var(--ink-2);
 }
 
@@ -1383,7 +1391,7 @@ strong {
   background: var(--paper);
   border: 1px solid var(--line-strong);
   border-radius: 999px;
-  font-size: 16px;
+  font-size: var(--fs-base);
   box-shadow: 0 1px 0 var(--line);
 }
 
@@ -1435,20 +1443,20 @@ strong {
   border: 1px solid var(--line-strong);
   border-radius: 6px;
   background: var(--paper);
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   animation: chip-in 240ms var(--ease-out) both;
 }
 
 .fchip b {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   color: var(--muted);
 }
 
 .fchip em {
   font-family: var(--mono);
   font-style: normal;
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   color: var(--accent-ink);
 }
 
@@ -1480,7 +1488,7 @@ strong {
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
 }
 
 .fstages li {
@@ -1499,7 +1507,7 @@ strong {
 
 .fnote {
   min-height: 3em;
-  font-size: 14.5px;
+  font-size: var(--fs-sm);
   line-height: 1.5;
   color: var(--ink-2);
   opacity: 0;
@@ -1528,7 +1536,7 @@ strong {
   border-radius: 999px;
   background: transparent;
   color: var(--ink-2);
-  font: 450 12.5px/1 var(--sans);
+  font: 450 var(--fs-sm)/1 var(--sans);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1548,13 +1556,13 @@ strong {
 }
 
 .fine {
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   color: var(--muted) !important;
 }
 
 @media (max-width: 900px) {
   .forager { grid-template-columns: minmax(0, 1fr); padding: 20px 16px; }
-  .fbar { font-size: 15px; padding: 0 14px; }
+  .fbar { font-size: var(--fs-base); padding: 0 14px; }
 }
 
 /* ---------------------------------------------------------------------------
@@ -1592,14 +1600,14 @@ strong {
 .proj-year,
 .proj-stack {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--muted);
 }
 
 .proj-name {
   font-family: var(--display);
   font-weight: 500;
-  font-size: clamp(22px, 2.3vw, 30px);
+  font-size: var(--fs-d3);
   line-height: 1.05;
   letter-spacing: -0.03em;
   transition: color 150ms ease;
@@ -1673,7 +1681,7 @@ strong {
   grid-column: 2;
   justify-self: start;
   font-family: var(--mono);
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
 }
 
 @media (max-width: 860px) {
@@ -1711,7 +1719,7 @@ strong {
 
 .bg-cell h3 {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 400;
   color: var(--muted);
   margin-bottom: 12px;
@@ -1722,7 +1730,7 @@ strong {
 }
 
 .bg-cell .big {
-  font-size: 20px;
+  font-size: var(--fs-lg);
   color: var(--ink);
   font-weight: 500;
   letter-spacing: -0.01em;
@@ -1740,7 +1748,7 @@ strong {
 
 .bg-list li {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: var(--fs-xs);
   padding: 3px 8px;
   border: 1px solid var(--line);
   background: var(--paper);
@@ -1763,14 +1771,14 @@ strong {
 }
 
 .contact .display {
-  font-size: clamp(38px, 6vw, 88px);
+  font-size: var(--fs-d1);
   max-width: 16ch;
 }
 
 .contact-mail {
   justify-self: start;
   font-family: var(--mono);
-  font-size: clamp(16px, 2.4vw, 26px);
+  font-size: var(--fs-xl);
   color: var(--accent-ink);
   text-decoration-color: var(--accent);
   overflow-wrap: anywhere;
@@ -1783,7 +1791,7 @@ strong {
   margin: 8px 0 0;
   padding: 0;
   list-style: none;
-  font-size: 14px;
+  font-size: var(--fs-sm);
 }
 
 .contact-links a {
@@ -1795,7 +1803,7 @@ strong {
   margin-top: clamp(48px, 8vw, 96px);
   padding-top: 20px;
   border-top: 1px solid var(--line);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--muted);
 }
 
@@ -1843,7 +1851,7 @@ strong {
   border-radius: 999px;
   background: transparent;
   color: var(--ink-2);
-  font: 500 12px/1 var(--mono);
+  font: 500 var(--fs-xs)/1 var(--mono);
   cursor: pointer;
   transition: background-color 150ms ease;
 }
