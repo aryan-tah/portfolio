@@ -1384,13 +1384,13 @@ strong {
 
 .fbar {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   min-height: 52px;
-  padding: 0 18px;
+  padding: 14px 18px;
   background: var(--paper);
   border: 1px solid var(--line-strong);
-  border-radius: 999px;
+  border-radius: 26px;
   font-size: var(--fs-base);
   box-shadow: 0 1px 0 var(--line);
 }
@@ -1403,17 +1403,24 @@ strong {
   stroke-linecap: round;
 }
 
+/* Long queries wrap, like a real search box growing with what you type. */
 .fq {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  line-height: 1.45;
+  min-height: 1.45em;
 }
 
-.fcaret {
-  flex: none;
+.fbar svg {
+  margin-top: 3px;
+}
+
+/* The caret sits right after the last typed character, even when the query wraps. */
+.fq::after {
+  content: "";
+  display: inline-block;
   width: 1.5px;
-  height: 20px;
-  margin-left: -8px;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: -0.2em;
   background: var(--accent);
   animation: blink 1s steps(2, start) infinite;
 }
@@ -1430,8 +1437,10 @@ strong {
 .fchips {
   display: flex;
   flex-wrap: wrap;
+  align-content: flex-start;
   gap: 6px;
-  min-height: 30px;
+  /* Room for two rows, so the card doesn't jump as chips arrive. */
+  min-height: 66px;
 }
 
 .fchip {
@@ -1562,7 +1571,7 @@ strong {
 
 @media (max-width: 900px) {
   .forager { grid-template-columns: minmax(0, 1fr); padding: 20px 16px; }
-  .fbar { font-size: var(--fs-base); padding: 0 14px; }
+  .fbar { padding: 12px 14px; }
 }
 
 /* ---------------------------------------------------------------------------

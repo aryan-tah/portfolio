@@ -8,21 +8,15 @@ type Demo = { q: string; chips: Chip[]; note: string };
 
 const demos: Demo[] = [
   {
-    q: "ex google designers in london",
+    q: "friends of friends in both SWE Internship 2027 and ACM at UCR who placed at Cutie Hack and know Python",
     chips: [
-      { kind: "text", k: "text", v: "designers" },
-      { kind: "filter", k: "org", v: "google", tag: "past" },
-      { kind: "filter", k: "location", v: "london" },
+      { kind: "scope", k: "in space", v: "SWE Internship 2027" },
+      { kind: "scope", k: "also in", v: "ACM at UCR" },
+      { kind: "graph", k: "vouches", v: "friends of friends" },
+      { kind: "filter", k: "skill", v: "python" },
+      { kind: "text", k: "text", v: "cutie hack" },
     ],
-    note: "If nobody is both, it relaxes location first and tells you, instead of returning nothing.",
-  },
-  {
-    q: "people in both climbing club and nowhere running",
-    chips: [
-      { kind: "scope", k: "in space", v: "climbing club" },
-      { kind: "scope", k: "and in", v: "nowhere running" },
-    ],
-    note: "Nested communities are part of the query: results must belong to every space named, and only spaces you can see.",
+    note: "Five constraints from one sentence. People who meet them all rank first; close matches follow, labelled with what they're missing.",
   },
   {
     q: "python devs I vouch for",
@@ -115,7 +109,7 @@ export function mountForager(root: HTMLElement, reduced: boolean) {
     stageEls.forEach((s) => s.removeAttribute("data-on"));
 
     // Type the query out.
-    const step = Math.max(14, Math.min(34, 1100 / d.q.length));
+    const step = Math.max(12, Math.min(34, 1300 / d.q.length));
     queryEl.textContent = "";
     if (reduced) queryEl.textContent = d.q;
     else [...d.q].forEach((_, k) => later(k * step, () => (queryEl.textContent = d.q.slice(0, k + 1))));

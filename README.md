@@ -22,7 +22,7 @@ Most portfolio sites tell you someone is good at systems. I wanted this one to s
 
 The four numbers next to the diagram (services, connections, edge crossings, duplicates) are counted from the drawing on every frame. They are not typed in. The clean layout's layer order came from a brute-force search over every ordering for the fewest crossings, which got it from 9 down to 3.
 
-**Forager demo.** Vennbee's search takes Google-style queries over a nested social network. The demo types a real query from Vennbee's labelled eval set ("ex google designers in london", "people in both climbing club and nowhere running", "python devs I vouch for"), shows the structured plan it parses into as chips, then lights the pipeline: parse, validate, keyword, semantic and facts lanes, fuse, graph rerank, permission check.
+**Forager demo.** Vennbee's search takes Google-style queries over a nested social network. The demo types a real query from Vennbee's labelled eval set ("friends of friends in both SWE Internship 2027 and ACM at UCR who placed at Cutie Hack and know Python", "python devs I vouch for", "founders not into crypto"), shows the structured plan it parses into as chips, then lights the pipeline: parse, validate, keyword, semantic and facts lanes, fuse, graph rerank, permission check.
 
 ## Run it
 
