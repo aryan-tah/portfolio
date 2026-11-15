@@ -708,7 +708,7 @@ export class SwarmScene {
 
     // Label: cross-fades from the messy name to the clean name as the node settles.
     const fontSize = this.vertical ? 9.5 : 11;
-    ctx.font = `${hover ? 600 : 450} ${fontSize}px "Geist Mono", ui-monospace, monospace`;
+    ctx.font = `${hover ? 500 : 450} ${fontSize}px "Geist Mono", ui-monospace, monospace`;
     const drawLabel = (text: string, alpha: number, color: string) => {
       if (alpha <= 0.02) return;
       ctx.globalAlpha = alpha;
