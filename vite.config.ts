@@ -11,6 +11,10 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, "index.html"),
         forager: resolve(__dirname, "forager/index.html"),
+        moderation: resolve(__dirname, "moderation/index.html"),
+        twobrains: resolve(__dirname, "twobrains/index.html"),
+        foresight: resolve(__dirname, "foresight/index.html"),
+        camus: resolve(__dirname, "camus/index.html"),
       },
     },
   },
