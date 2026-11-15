@@ -41,9 +41,11 @@ npm run preview   # serves dist/
 
 ```
 index.html            page structure and all static copy
+forager/index.html    Forager case study
 src/
   content.ts          experience, projects, education, stack (edit this first)
   main.ts             renders sections, runs the swarm's playback loop
+  case.ts             entry for case-study pages
   impact.ts           hero ledger: struck-out old numbers, odometer new ones
   system.ts           Vennbee subsystem diagram in the Work section
   forager.ts          Forager demo: query, parsed plan, pipeline
