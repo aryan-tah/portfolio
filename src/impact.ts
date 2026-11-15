@@ -38,9 +38,10 @@ const impacts: Impact[] = [
     line: "incoming students on the University of California tool I helped test. I built pipelines that migrate their records.",
   },
   {
-    project: "Ascentio",
-    value: "<100ms",
-    line: "request latency after rebuilding our Citrus Hack study platform's inference layer in TypeScript.",
+    project: "Camus",
+    old: "JVM + ZooKeeper",
+    value: "1 binary",
+    line: "for a Kafka-compatible broker in Rust, its log in Cloudflare R2. I made its R2 cost measurable (2 merged PRs) and wrote RFCs on scaling and quotas.",
   },
 ];
 
@@ -63,6 +64,9 @@ function setValue(el: HTMLElement, text: string, reduced: boolean) {
       // Each wheel takes a little longer than the one before, like a real odometer.
       r.style.transitionDuration = reduced ? "0ms" : `${720 + i * 110}ms`;
       r.style.transform = `translateY(${-digits[i] * 10}%)`;
+      // Narrow the window to the digit it lands on, so a "1" doesn't sit in a "0"-wide slot.
+      const target = r.children[digits[i]] as HTMLElement;
+      (r.parentElement as HTMLElement).style.width = `${target.scrollWidth}px`;
     });
   if (reduced) roll();
   else requestAnimationFrame(() => requestAnimationFrame(roll));

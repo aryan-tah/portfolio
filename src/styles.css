@@ -552,6 +552,7 @@ p {
 
 .impact-new .dg {
   display: inline-block;
+  transition: width 600ms var(--ease-out);
   height: 1em;
   overflow: clip;
   /* Fade the wheel's edges so it reads as a window onto a drum. */
@@ -564,6 +565,11 @@ p {
   flex-direction: column;
   transition-property: transform;
   transition-timing-function: cubic-bezier(0.2, 0.85, 0.25, 1);
+}
+
+.dg-reel span {
+  width: max-content;
+  margin-inline: auto;
 }
 
 .dg-reel span,

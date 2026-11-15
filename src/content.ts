@@ -91,6 +91,15 @@ export const projects: Project[] = [
     href: "https://github.com/aryan-tah/foresight",
   },
   {
+    name: "Camus",
+    line: "Kafka in one Rust binary, backed by R2. Contributor.",
+    detail:
+      "An open-source broker that speaks the Apache Kafka wire protocol and stores its log in Cloudflare R2, with no JVM or ZooKeeper. I added object-store call and byte counters so R2 request cost is measured instead of estimated, and per-shard WAL metrics so upload lag and a stopped shard can be alerted on (2 merged PRs). I also wrote RFCs for adding brokers without moving partitions by hand and for per-principal quotas, plus issues on a Helm chart, rolling upgrades and restore drills.",
+    stack: ["Rust", "Kafka protocol", "Cloudflare R2", "Prometheus"],
+    year: "2026",
+    href: "https://github.com/nidheesh-m-vakharia/camus",
+  },
+  {
     name: "Primer",
     line: "Stop paying Claude to rediscover your codebase.",
     detail:
