@@ -1,6 +1,6 @@
-// Hero: "I build the ___ behind Vennbee." The word cycles through the four
-// subsystems I own, and the diagram beside it lights that subsystem's request
-// path. The diagram is the same clean architecture the swarm section ends on.
+// Work section: "I build the ___ behind Vennbee." The word cycles through the
+// four subsystems I own, and the diagram beside it lights that subsystem's
+// request path. It's the same clean architecture the swarm section ends on.
 
 type Kind = "client" | "edge" | "svc" | "data" | "worker" | "ext";
 type N = { id: string; label: string; kind: Kind; x: number; y: number };
@@ -78,7 +78,7 @@ function shape(n: N): string {
   }
 }
 
-export function mountHero(root: HTMLElement, reduced: boolean) {
+export function mountSystem(root: HTMLElement, reduced: boolean) {
   const words = root.querySelector<HTMLElement>("[data-words]")!;
   const svg = root.querySelector<SVGSVGElement>("[data-system]")!;
   const note = root.querySelector<HTMLElement>("[data-note]")!;
@@ -183,10 +183,16 @@ export function mountHero(root: HTMLElement, reduced: boolean) {
   const panel = root.querySelector<HTMLElement>(".system")!;
   panel.addEventListener("pointerenter", () => (held = true));
   panel.addEventListener("pointerleave", () => (held = false));
-  new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(root);
-
-  // Start once the diagram has drawn itself in.
-  root.classList.add("is-ready");
-  window.setTimeout(() => show(0), reduced ? 0 : 1100);
-  window.setTimeout(schedule, reduced ? 0 : 1100);
+  // Draw in and start cycling the first time it scrolls into view.
+  let started = false;
+  new IntersectionObserver(
+    ([e]) => {
+      visible = e.isIntersecting;
+      if (!visible || started) return;
+      started = true;
+      root.classList.add("is-ready");
+      window.setTimeout(() => { show(0); schedule(); }, reduced ? 0 : 1000);
+    },
+    { threshold: 0.35 },
+  ).observe(root);
 }

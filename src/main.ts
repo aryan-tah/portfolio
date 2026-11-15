@@ -1,7 +1,8 @@
 import "./styles.css";
 import { education, experience, projects, stack } from "./content";
 import { mountSearch } from "./search";
-import { mountHero } from "./hero";
+import { mountImpact } from "./impact";
+import { mountSystem } from "./system";
 import { cleanNodes, messyNodes } from "./swarm/graph";
 import { PHASES, SwarmScene, type LogLine } from "./swarm/scene";
 
@@ -134,6 +135,8 @@ function renderBackground() {
       <p class="big">${esc(education.school)}</p>
       <p>${esc(education.degree)}, ${esc(education.dates)}. ${esc(education.focus)}.</p>
       <p style="margin-top:10px" class="mono fine">${esc(education.honors)}</p>
+      <h3 style="margin-top:22px">Off the clock</h3>
+      <p>${esc(education.offClock)}</p>
     </div>
     <div class="bg-cell">
       <h3>Languages</h3>
@@ -167,8 +170,8 @@ function mountSwarm() {
     p.innerHTML = `<span>${p.innerHTML}</span>`;
   });
 
-  // Keep the heading honest if the graph changes.
-  $("#swarm-title").textContent = `A backend with ${messyNodes.length} services. It needs ${cleanNodes.length}.`;
+  // The label under the heading is counted from the graph, so it stays honest if the graph changes.
+  $("[data-swarm-count]").textContent = `${messyNodes.length} services → ${cleanNodes.length}`;
 
   const small = window.innerWidth < 720;
   // ?agents=dots draws the swarm as dots instead of cursors.
@@ -345,6 +348,7 @@ renderWork();
 renderProjects();
 renderBackground();
 mountClock();
-mountHero($(".hero"), reduced);
+mountImpact($("[data-impact]"), reduced);
+mountSystem($("[data-vb]"), reduced);
 mountSearch($(".hybrid"));
 mountSwarm();

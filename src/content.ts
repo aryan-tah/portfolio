@@ -8,6 +8,7 @@ export const profile = {
   links: {
     github: "https://github.com/aryan-tah",
     linkedin: "https://www.linkedin.com/in/aryan-tah-8b5916221/",
+    x: "https://x.com/aryantah07",
     vennbee: "https://vennbee.com",
   },
 };
@@ -32,7 +33,7 @@ export const experience: Role[] = [
       "I own the backend: search, feed, moderation and real-time chat.",
       "Search takes a plain-English description of a community and blends keyword matching with pgvector similarity, so nobody has to guess the right keyword.",
       "Moderation had to pass Apple's rules for user-generated content: a word filter, a 41.9K-domain link blocklist, AI scoring for text, images, video and audio, and strikes with appeals.",
-      "The feed learns from likes, replies and reposts. A referral leaderboard got the waitlist to 192 people before launch.",
+      "The feed learns from likes, replies and reposts. Referral links and a leaderboard brought in 160+ sign-ups in a single day.",
     ],
     stack: ["NestJS", "PostgreSQL", "pgvector", "Redis", "BullMQ", "Socket.IO", "AWS"],
   },
@@ -108,28 +109,37 @@ export const projects: Project[] = [
     href: "https://github.com/aryan-tah/howisay",
   },
   {
-    name: "StudyBuddy",
-    line: "Third place, Citrus Hack 2025.",
+    name: "Ascentio",
+    line: "Third place at Citrus Hack, then rebuilt properly.",
     detail:
-      "Built in a weekend. Agents write, grade and rewrite LaTeX study guides, with RAG memory on Redis and Canvas and Google Calendar sync.",
+      "Started as StudyBuddy, a weekend hackathon build where agents write, grade and rewrite LaTeX study guides with RAG memory on Redis and Canvas and Google Calendar sync. We rewrote it as Ascentio; I built the TypeScript inference layer and got request processing under 100ms.",
     stack: ["TypeScript", "Redis", "LLM APIs"],
     year: "2025",
     href: "https://devpost.com/software/studybuddy-znl1g0",
   },
   {
-    name: "Discord MusicBot",
-    line: "Open-source contributor, 3.1K stars, 300K+ users.",
+    name: "Unifolio",
+    line: "Tailored LaTeX resumes from one job description.",
     detail:
-      "Contributed search, playback controls and YouTube and Spotify support, and moderated the project's 4,000-member community.",
+      "Led a team of four and wrote about 95% of the code. It takes your existing experience and a specific job description and produces a properly formatted, tailored LaTeX resume.",
+    stack: ["TypeScript", "LaTeX", "LLM APIs"],
+    year: "2025",
+    href: "https://unifolio-live.vercel.app/dashboard",
+  },
+  {
+    name: "Discord MusicBot",
+    line: "Open-source contributor in 10th grade. 3.2K stars.",
+    detail:
+      "Joined one of GitHub's most popular Discord music bots while teaching myself JavaScript. Contributed search, playback controls and YouTube and Spotify support, and moderated its 4,000-member community. 3.2K stars, 3K forks, 300K+ users.",
     stack: ["Node.js", "discord.js"],
     year: "2021",
     href: "https://github.com/SudhanPlayz/Discord-MusicBot",
   },
   {
     name: "School voting system",
-    line: "Ran a real election for 1,000+ students.",
+    line: "Four days of paper counting, down to five minutes.",
     detail:
-      "Built and operated the platform for my high school's election across 30+ machines. It earned an Award of Honor.",
+      "My 5,000-student high school had run elections on paper for 15 years. A friend and I replaced it, using only the ~30 lab computers we were allowed, with class-sized voting slots and anonymous ballots. 1,000+ students voted in one day, results for every position were ready in about five minutes, and the school kept using a similar system after we left.",
     stack: ["React", "Node.js", "Firebase"],
     year: "HS",
     href: "https://voting-system-cyan.vercel.app/",
@@ -142,6 +152,7 @@ export const education = {
   dates: "2023 to 2027",
   focus: "Systems programming, machine learning, software architecture",
   honors: "Dean's Honors List · Achievement Scholarship · Payne Award · AWS Certified Cloud Practitioner",
+  offClock: "2131 blitz on Chess.com, 99.7th percentile. UCR Chess Club.",
 };
 
 export const stack = {

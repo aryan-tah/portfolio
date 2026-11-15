@@ -10,7 +10,9 @@ Most portfolio sites tell you someone is good at systems. I wanted this one to s
 
 ## What's on the page
 
-**Hero.** "I build the search behind Vennbee." The highlighted word rolls through the four subsystems I own (search, feed, moderation, real-time chat), and the diagram beside it lights that subsystem's request path in Vennbee's backend, with a line on how it works. Click a subsystem to hold it. Underneath, a row of real numbers: TestFlight builds, waitlist size, blocklist size, neurons simulated, open-source stars.
+**Hero.** "I build systems real people run on," then a ledger of what that's meant in numbers: an election count that went from four days to five minutes, 160+ sign-ups in a day for Vennbee, a fly brain cut from 139,248 neurons to 316, and more. Old numbers get struck out and new ones roll in on odometer wheels. The active row's progress bar is the timer; hover to pause, click any row to jump to it.
+
+**Inside Vennbee.** In the Work section, "I build the search behind Vennbee": the highlighted word rolls through search, feed, moderation and real-time chat, and a diagram of Vennbee's backend lights that subsystem's request path.
 
 ![The swarm rebuild, partway through](docs/swarm-tangle.png)
 
@@ -40,7 +42,8 @@ index.html            page structure and all static copy
 src/
   content.ts          experience, projects, education, stack (edit this first)
   main.ts             renders sections, runs the swarm's playback loop
-  hero.ts             rolling headline and the subsystem diagram
+  impact.ts           hero ledger: struck-out old numbers, odometer new ones
+  system.ts           Vennbee subsystem diagram in the Work section
   search.ts           hybrid search toy
   styles.css          tokens, layout, every component
   swarm/
@@ -71,7 +74,7 @@ A few decisions worth knowing about:
 Fork it, then:
 
 1. Replace the copy in `src/content.ts` and the hero and contact text in `index.html`.
-2. Redraw the hero diagram in `src/hero.ts` and the two swarm architectures in `src/swarm/graph.ts`. The section's heading updates itself from the node counts.
+2. Put your own numbers in `src/impact.ts`, redraw the Vennbee diagram in `src/system.ts` and the two swarm architectures in `src/swarm/graph.ts`. The section's heading updates itself from the node counts.
 3. Pick a palette. `src/styles.css` defines four (cobalt, signal, teal, honey), each with light and dark modes; set `data-palette` on `<html>` in `index.html`. On localhost a switcher in the bottom-right corner lets you compare them live. Each palette has one accent color and keeps it to small marks.
 4. Update the `og:image` URL in `index.html` and the source link in the footer.
 

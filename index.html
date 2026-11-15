@@ -51,58 +51,44 @@
     <main id="main">
       <!-- Hero -------------------------------------------------------------->
       <section class="hero sheet" id="top" data-sheet="01">
-        <div class="hero-main">
-          <div class="hero-copy">
-            <p class="eyebrow mono hero-in" style="--d: 0">Aryan Tah · Backend engineer · Co-founder, Vennbee</p>
-            <h1 class="display hero-title">
-              <span class="line"><span class="hero-in" style="--d: 1">I build the</span></span>
-              <span class="line"><span class="hero-in roll" style="--d: 2"><span class="roll-track" data-words>search</span></span></span>
-              <span class="line"><span class="hero-in" style="--d: 3">behind Vennbee.</span></span>
-              <span class="sr-only" aria-live="polite" data-word-live>search</span>
-            </h1>
-            <p class="lede hero-in" style="--d: 4">
-              Then I take parts away until it's simple. Computer science at UC Riverside, graduating 2027.
-            </p>
-            <div class="hero-actions hero-in" style="--d: 5">
-              <a class="btn btn-primary" href="#swarm">
-                Watch a rebuild
-                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" /></svg>
-              </a>
-              <a class="btn" href="mailto:aryan.tah7@gmail.com">Email me</a>
-            </div>
-          </div>
-
-          <figure class="system" aria-label="Vennbee's backend. The highlighted path is the subsystem named in the headline.">
-            <div class="system-head mono">
-              <span>vennbee / backend</span>
-              <div class="system-tabs" role="tablist" aria-label="Subsystem" data-tabs></div>
-            </div>
-            <svg class="system-svg" viewBox="0 0 548 400" data-system aria-hidden="true"></svg>
-            <figcaption class="system-note" data-note>
-              Describe a community the way you'd tell a friend. Keyword match and pgvector similarity, blended in one Postgres query.
-            </figcaption>
-            <span class="crop crop-tl" aria-hidden="true"></span>
-            <span class="crop crop-tr" aria-hidden="true"></span>
-            <span class="crop crop-bl" aria-hidden="true"></span>
-            <span class="crop crop-br" aria-hidden="true"></span>
-          </figure>
+        <div class="hero-intro">
+          <p class="eyebrow mono hero-in" style="--d: 0">Aryan Tah · Backend engineer · Co-founder, Vennbee · Riverside, CA</p>
+          <h1 class="display hero-title">
+            <span class="line"><span class="hero-in" style="--d: 1">I build systems</span></span>
+            <span class="line"><span class="hero-in" style="--d: 2">real people <em>run on.</em></span></span>
+          </h1>
         </div>
 
-        <dl class="proof mono hero-in" style="--d: 6">
-          <div><dt>TestFlight builds</dt><dd>7</dd></div>
-          <div><dt>pre-launch waitlist</dt><dd>192</dd></div>
-          <div><dt>domains on the blocklist</dt><dd>41.9K</dd></div>
-          <div><dt>neurons simulated in a tab</dt><dd>139,248</dd></div>
-          <div><dt>stars, open-source bot</dt><dd>3.1K</dd></div>
-        </dl>
+        <div class="impact hero-in" style="--d: 4" data-impact>
+          <div class="impact-stage" data-stage aria-hidden="true">
+            <p class="impact-kicker mono" data-kicker>&nbsp;</p>
+            <p class="impact-old" data-old hidden><span></span><i></i></p>
+            <p class="impact-new" data-new>&nbsp;</p>
+            <p class="impact-line" data-line></p>
+          </div>
+          <p class="sr-only" aria-live="polite" data-live></p>
+          <div class="impact-side">
+            <p class="eyebrow mono">Built, then measured</p>
+            <ol class="impact-index" data-index></ol>
+          </div>
+        </div>
+
+        <div class="hero-actions hero-in" style="--d: 6">
+          <a class="btn btn-primary" href="#swarm">
+            Watch a rebuild
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" /></svg>
+          </a>
+          <a class="btn" href="#projects">See the projects</a>
+          <a class="btn btn-quiet" href="mailto:aryan.tah7@gmail.com">aryan.tah7@gmail.com</a>
+        </div>
       </section>
 
       <!-- Swarm rebuild ------------------------------------------------------>
       <section class="swarm" id="swarm" aria-labelledby="swarm-title">
         <div class="swarm-stage">
           <div class="swarm-head">
-            <p class="eyebrow mono">02 · Swarm rebuild</p>
-            <h2 id="swarm-title" class="display">A backend with 39 services. It needs 14.</h2>
+            <p class="eyebrow mono">02 · Swarm rebuild · <span data-swarm-count>39 services → 14</span></p>
+            <h2 id="swarm-title" class="display">I architect systems for scale, <em>then optimize them.</em></h2>
           </div>
 
           <div class="swarm-canvas-wrap">
@@ -172,6 +158,31 @@
         </header>
         <div class="roles" data-roles></div>
 
+        <div class="vb" data-vb>
+          <div class="vb-copy">
+            <p class="eyebrow mono">Inside Vennbee</p>
+            <h3 class="display vb-title">
+              I build the <span class="roll"><span class="roll-track" data-words>search</span></span><br />behind Vennbee.
+            </h3>
+            <span class="sr-only" aria-live="polite" data-word-live>search</span>
+            <p class="vb-sub">Each subsystem I own, traced through the backend. Pick one to hold it.</p>
+          </div>
+          <figure class="system" aria-label="Vennbee's backend. The highlighted path is the subsystem named in the headline.">
+            <div class="system-head mono">
+              <span>vennbee / backend</span>
+              <div class="system-tabs" role="tablist" aria-label="Subsystem" data-tabs></div>
+            </div>
+            <svg class="system-svg" viewBox="0 0 548 400" data-system aria-hidden="true"></svg>
+            <figcaption class="system-note" data-note>
+              Describe a community the way you'd tell a friend. Keyword match and pgvector similarity, blended in one Postgres query.
+            </figcaption>
+            <span class="crop crop-tl" aria-hidden="true"></span>
+            <span class="crop crop-tr" aria-hidden="true"></span>
+            <span class="crop crop-bl" aria-hidden="true"></span>
+            <span class="crop crop-br" aria-hidden="true"></span>
+          </figure>
+        </div>
+
         <div class="hybrid" aria-labelledby="hybrid-title">
           <div class="hybrid-copy">
             <p class="eyebrow mono">One piece of it</p>
@@ -229,6 +240,7 @@
       <ul class="contact-links mono">
         <li><a href="https://github.com/aryan-tah" rel="noopener">GitHub</a></li>
         <li><a href="https://www.linkedin.com/in/aryan-tah-8b5916221/" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://x.com/aryantah07" rel="noopener">X</a></li>
         <li><a href="https://vennbee.com" rel="noopener">Vennbee</a></li>
       </ul>
       <p class="colophon mono">
