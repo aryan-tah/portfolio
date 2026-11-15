@@ -35,7 +35,7 @@ const impacts: Impact[] = [
   {
     project: "UC Wide",
     value: "150,000",
-    line: "incoming students on the University of California tool I helped test. I built pipelines that migrate their records.",
+    line: "incoming and transfer students on UC Wide, the University of California system tool I tested before launch.",
   },
   {
     project: "Camus",
