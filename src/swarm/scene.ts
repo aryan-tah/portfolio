@@ -243,7 +243,9 @@ export class SwarmScene {
       const a = this.agents[(ei * 7) % this.agents.length];
       if (a.cut === -1) a.cut = ei;
     });
-    // A node counts as "scanned" a moment after its first agent lands.
+    // A node counts as "scanned" a moment after its first agent lands. With a small
+    // swarm some nodes get no agent, so every node also gets its own scan time.
+    for (const n of this.nodes) n.scanAt = 0.14 + (n.seed % 1) * 0.18;
     for (const a of this.agents) {
       const n = this.nodes[a.home];
       n.scanAt = Math.min(n.scanAt, a.arrive + 0.03);
@@ -602,8 +604,8 @@ export class SwarmScene {
       ctx.stroke();
       ctx.fill();
 
-      // Every twelfth cursor carries a name tag, like people in a shared canvas.
-      if (i % 12 !== 0) return;
+      // Every sixth cursor carries a name tag, like people in a shared canvas.
+      if (i % 6 !== 0) return;
       const name = "agent-" + String(i).padStart(3, "0");
       ctx.font = tagFont;
       const w = ctx.measureText(name).width + 10;
