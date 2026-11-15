@@ -2356,6 +2356,23 @@ strong {
 .play .v-mod li[data-s="review"] { border-color: var(--accent); }
 .play .v-mod li[data-s="review"] em { color: var(--accent-ink); }
 
+/* Graph */
+.v-graph { width: 100%; height: auto; display: block; overflow: visible; }
+.v-graph-edges line { stroke: var(--line-strong); stroke-width: 1.2; transition: opacity 500ms ease 1200ms; }
+.v-graph-table line { stroke: var(--line); stroke-width: 1; opacity: 0; transition: opacity 500ms ease 1500ms; }
+.v-graph-n {
+  transform: translate(var(--gx), var(--gy));
+  transition: transform 900ms var(--ease-in-out);
+  transition-delay: calc(1200ms + var(--i) * 60ms);
+}
+.v-graph-n circle { fill: var(--paper); stroke: var(--accent); stroke-width: 1.6; }
+.v-graph-n text { font: 400 10px var(--mono); fill: var(--muted); }
+.play .v-graph-n { transform: translate(var(--tx), var(--ty)); }
+.play .v-graph-edges line { opacity: 0; }
+.play .v-graph-table line { opacity: 1; }
+.v-graph-n2 { margin-top: 10px; font-size: var(--fs-xs); color: var(--muted); }
+.v-graph-n2 span:last-child { color: var(--accent-ink); }
+
 /* TwoBrains */
 .v-brain { display: grid; gap: 8px; height: 100%; }
 .v-brain canvas { width: 100%; height: 210px; display: block; }
@@ -2398,4 +2415,7 @@ strong {
   .v-res i { transform: none; }
   .v-fc-h, .v-fc-f { stroke-dashoffset: 0; }
   .v-fc-band { opacity: 0.15; }
+  .v-graph-n { transform: translate(var(--tx), var(--ty)); }
+  .v-graph-edges line { opacity: 0; }
+  .v-graph-table line { opacity: 1; }
 }

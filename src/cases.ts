@@ -51,6 +51,22 @@ function moderationVisual(el: HTMLElement) {
   return () => el.classList.add("play");
 }
 
+function graphVisual(el: HTMLElement) {
+  // Eight nodes: first as a scattered graph, then settling into the rows of a table.
+  const graph = [[60, 50], [150, 30], [250, 60], [330, 40], [90, 140], [200, 120], [300, 150], [170, 190]];
+  const edges = [[0, 1], [1, 2], [2, 3], [0, 4], [1, 5], [2, 5], [5, 6], [4, 7], [5, 7], [3, 6]];
+  const row = (i: number) => [40 + (i % 2) * 170, 40 + Math.floor(i / 2) * 42];
+  el.innerHTML = `
+    <svg class="v-graph" viewBox="0 0 400 220" aria-hidden="true">
+      <g class="v-graph-table">${[0, 1, 2, 3].map((r) => `<line x1="20" x2="380" y1="${60 + r * 42}" y2="${60 + r * 42}" />`).join("")}
+        <line x1="200" x2="200" y1="18" y2="186" /></g>
+      <g class="v-graph-edges">${edges.map(([a, b]) => `<line x1="${graph[a][0]}" y1="${graph[a][1]}" x2="${graph[b][0]}" y2="${graph[b][1]}" />`).join("")}</g>
+      ${graph.map(([x, y], i) => { const [rx, ry] = row(i); return `<g class="v-graph-n" style="--gx:${x}px;--gy:${y}px;--tx:${rx}px;--ty:${ry}px;--i:${i}"><circle r="6" /><text x="14" y="4">${["vouch", "member", "space", "reply", "profile", "child of", "post", "like"][i]}</text></g>`; }).join("")}
+    </svg>
+    <p class="mono v-graph-n2"><span>Neo4j</span> → <span>Postgres + AGE</span> → <span>indexed SQL for hot paths</span></p>`;
+  return () => el.classList.add("play");
+}
+
 function brainVisual(el: HTMLElement, reduced: boolean) {
   el.innerHTML = `<div class="v-brain"><canvas></canvas><p class="mono"><span data-pct>0%</span> deleted · escape <span data-esc>1.00</span></p></div>`;
   const canvas = el.querySelector("canvas")!;
@@ -170,6 +186,14 @@ const cases: Case[] = [
     line: "Every kind of user content covered, to meet Apple's rules for user content, without punishing people for their real names.",
     stats: [["41,861", "blocked link hosts"], ["Every", "surface reportable"], ["Live", "in Vennbee today"]],
     visual: moderationVisual,
+  },
+  {
+    slug: "graph",
+    kicker: "Vennbee · infrastructure",
+    title: "Moving a social graph into Postgres without rewriting the app",
+    line: "Neo4j swapped for Apache AGE inside Postgres, then the hottest reads moved to plain SQL.",
+    stats: [["~10s → 3–6ms", "graph reranking per result"], ["640ms → 1ms", "co-member lookup"], ["38", "files changed in the swap"]],
+    visual: graphVisual,
   },
   {
     slug: "twobrains",
