@@ -26,7 +26,6 @@ const smooth = (t: number) => {
 };
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
-const easeIn = (t: number) => t * t * t;
 const quad = (a: V, c: V, b: V, t: number): V => {
   const u = 1 - t;
   return { x: u * u * a.x + 2 * u * t * c.x + t * t * b.x, y: u * u * a.y + 2 * u * t * c.y + t * t * b.y };
@@ -54,15 +53,19 @@ function rng(seed: number) {
 
 export const PHASES = [
   { at: 0.0, key: "tangle" },
-  { at: 0.1, key: "swarm" },
-  { at: 0.36, key: "rebuild" },
-  { at: 0.8, key: "ship" },
+  { at: 0.03, key: "swarm" },
+  { at: 0.14, key: "rebuild" },
+  { at: 0.76, key: "ship" },
 ] as const;
 
-const SWARM_IN = [0.1, 0.32] as const;
-const LEAVE = [0.78, 0.86] as const;
-const CLEAN_EDGES_AT = [0.6, 0.78] as const;
-const CLEAN_TRAFFIC_AT = 0.8;
+// Merges happen first, then survivors move into their layers.
+const MERGE_AT = [0.06, 0.4] as const;
+const MERGE_DUR = 0.1;
+const KEEP_AT = [0.28, 0.6] as const;
+const KEEP_DUR = 0.12;
+const TRAVEL = 0.07; // first flight in, and the flight out
+const GRAB = 0.012; // the press before a drag
+const CLEAN_TRAFFIC_AT = 0.78;
 
 // ---------------------------------------------------------------------------
 
@@ -75,28 +78,25 @@ type RNode = {
   start: number;
   dur: number;
   seed: number;
-  scanAt: number;
   // per-frame
   pos: V;
   k: number;
   alpha: number;
 };
 
-type REdge = { a: number; b: number; cutAt: number; seed: number; alpha: number; hot: boolean };
+/** keep: the edge is a real dependency that survives, so it rides along and becomes a clean edge. */
+type REdge = { a: number; b: number; cutAt: number; seed: number; alpha: number; hot: boolean; keep: boolean };
 
 type CEdge = { a: string; b: string; start: number; samples: V[]; drawn: number };
 
+type Task = { node: number; grab: number; start: number; end: number };
+
 type Agent = {
-  home: number;
-  arrive: number;
-  leave: number;
-  radius: number;
-  speed: number;
-  phase: number;
-  spawn: V; // normalized spread values, resolved at draw time
+  name: string;
+  tasks: Task[];
+  spawn: V; // normalized, resolved against the canvas at draw time
   bend: number;
   exitBend: number;
-  cut: number; // index into messy edges, or -1
   prev: V | null;
 };
 
@@ -106,7 +106,7 @@ export type Stats = { services: number; edges: number; crossings: number; waste:
 
 export type Hit = { label: string; text: string; x: number; y: number; state: "tangled" | "clean" };
 
-type Palette = { ink: string; muted: string; line: string; accent: string; warn: string; paper: string };
+type Palette = { ink: string; muted: string; line: string; accent: string; onAccent: string; warn: string; paper: string };
 
 export class SwarmScene {
   private ctx: CanvasRenderingContext2D;
@@ -126,6 +126,7 @@ export class SwarmScene {
   readonly log: LogLine[] = [];
   readonly agentCount: number;
   reduced = false;
+  agentStyle: "cursor" | "dot" = "cursor";
 
   constructor(private canvas: HTMLCanvasElement, agentCount: number) {
     this.ctx = canvas.getContext("2d")!;
@@ -142,6 +143,7 @@ export class SwarmScene {
       muted: v("--muted"),
       line: v("--line-strong"),
       accent: v("--accent"),
+      onAccent: v("--on-accent"),
       warn: v("--warn"),
       paper: v("--paper"),
     };
@@ -174,10 +176,9 @@ export class SwarmScene {
         kept,
         u: best.x,
         v: best.y,
-        start: kept ? 0.46 + r() * 0.18 : 0.36 + r() * 0.22,
-        dur: kept ? 0.14 : 0.12,
+        start: kept ? lerp(KEEP_AT[0], KEEP_AT[1], r()) : lerp(MERGE_AT[0], MERGE_AT[1], r()),
+        dur: kept ? KEEP_DUR : MERGE_DUR,
         seed: r() * 1000,
-        scanAt: 1,
         pos: { x: 0, y: 0 },
         k: 0,
         alpha: 1,
@@ -186,82 +187,83 @@ export class SwarmScene {
       this.byId.set(def.id, n);
     }
 
+    // Messy edges that map onto a clean edge survive: they stretch while their ends
+    // are dragged, then hand over to the clean curve. Everything else is cut the
+    // moment one of its ends is picked up.
     const index = new Map(messyNodes.map((d, i) => [d.id, i]));
+    const cleanPairs = new Set(cleanEdges.flatMap(([a, b]) => [`${a}>${b}`, `${b}>${a}`]));
     this.edges = messyEdges.map(([a, b]) => {
       const ia = index.get(a)!, ib = index.get(b)!;
+      const na = this.nodes[ia], nb = this.nodes[ib];
+      const keep = na.def.into !== nb.def.into && cleanPairs.has(`${na.def.into}>${nb.def.into}`);
+      r(); // keeps the random sequence, and so the tangle layout, stable
       return {
         a: ia,
         b: ib,
-        cutAt: 0.38 + r() * 0.28,
+        cutAt: keep
+          ? Math.max(na.start + na.dur, nb.start + nb.dur) + 0.004
+          : Math.min(na.start, nb.start) - GRAB,
         seed: r(),
         alpha: 1,
-        hot: !!(this.nodes[ia].def.hot || this.nodes[ib].def.hot),
+        hot: !!(na.def.hot || nb.def.hot),
+        keep,
       };
     });
 
-    // Clean edges draw in source-layer order so the new system "grows" from the clients.
-    const layerOf = new Map(cleanNodes.map((c) => [c.id, c.layer]));
-    const sorted = [...cleanEdges].sort((x, y) => layerOf.get(x[0])! - layerOf.get(y[0])!);
-    this.cEdges = sorted.map(([a, b], i) => ({
+    // A clean edge draws in once both of its ends have been dragged into place.
+    const placedAt = (id: string) => {
+      const n = this.byId.get(id)!;
+      return n.start + n.dur;
+    };
+    this.cEdges = cleanEdges.map(([a, b]) => ({
       a,
       b,
-      start: lerp(CLEAN_EDGES_AT[0], CLEAN_EDGES_AT[1] - 0.06, i / (sorted.length - 1)),
+      start: Math.max(placedAt(a), placedAt(b)) + 0.004,
       samples: [],
       drawn: 0,
     }));
 
-    // Agents: weighted toward nodes that will be merged, since that's where the work is.
-    const homes: number[] = [];
-    this.nodes.forEach((n, i) => {
-      const weight = n.kept ? 2 : 4;
-      for (let k = 0; k < weight; k++) homes.push(i);
-    });
-    for (let i = homes.length - 1; i > 0; i--) {
-      const j = Math.floor(r() * (i + 1));
-      [homes[i], homes[j]] = [homes[j], homes[i]];
-    }
+    // One drag task per node. Each task goes to the agent that freed up most
+    // recently (so nobody waits around), or to a fresh agent if none is free.
+    const order = this.nodes.map((_, i) => i).sort((x, y) => this.nodes[x].start - this.nodes[y].start);
     for (let i = 0; i < this.agentCount; i++) {
-      const home = homes[i % homes.length];
       this.agents.push({
-        home,
-        arrive: lerp(SWARM_IN[0], SWARM_IN[1], r()),
-        leave: lerp(LEAVE[0], LEAVE[1], r()),
-        radius: 9 + r() * 16,
-        speed: (0.7 + r() * 1.3) * (r() < 0.5 ? -1 : 1),
-        phase: r() * Math.PI * 2,
+        name: "agent-" + String(i).padStart(3, "0"),
+        tasks: [],
         spawn: { x: r(), y: r() },
         bend: (r() - 0.5) * 2,
         exitBend: (r() - 0.5) * 2,
-        cut: -1,
         prev: null,
       });
     }
-    // Each messy edge gets one agent that flies over and snips it.
-    this.edges.forEach((_, ei) => {
-      const a = this.agents[(ei * 7) % this.agents.length];
-      if (a.cut === -1) a.cut = ei;
-    });
-    // A node counts as "scanned" a moment after its first agent lands.
-    for (const a of this.agents) {
-      const n = this.nodes[a.home];
-      n.scanAt = Math.min(n.scanAt, a.arrive + 0.03);
+    const freeAt = (a: Agent) => (a.tasks.length ? a.tasks[a.tasks.length - 1].end : -1);
+    for (const ni of order) {
+      const n = this.nodes[ni];
+      const ready = this.agents.filter((a) => a.tasks.length && freeAt(a) <= n.start - GRAB - 0.05);
+      let pick: Agent | undefined = ready.sort((x, y) => freeAt(y) - freeAt(x))[0];
+      pick ??= this.agents.find((a) => !a.tasks.length);
+      pick ??= [...this.agents].sort((x, y) => freeAt(x) - freeAt(y))[0]!;
+      pick.tasks.push({ node: ni, grab: n.start - GRAB, start: n.start, end: n.start + n.dur });
     }
+    this.agents = this.agents.filter((a) => a.tasks.length);
 
     // Swarm log, sorted by when each event happens.
-    const agentName = (i: number) => "agent-" + String(i).padStart(3, "0");
+    const owner = new Map<number, string>();
+    for (const a of this.agents) for (const t of a.tasks) owner.set(t.node, a.name);
     const merged = this.nodes.filter((n) => !n.kept);
-    this.log.push({ at: 0.1, agent: "swarm", verb: "spawn", text: `${this.agentCount} agents, one goal: fewer moving parts` });
-    this.log.push({ at: 0.3, agent: "swarm", verb: "scan", text: `${merged.length} of ${this.nodes.length} services are duplicates or dead weight` });
-    merged.forEach((n, i) => {
+    this.log.push({ at: 0.02, agent: "swarm", verb: "spawn", text: `${this.agents.length} agents, one goal: fewer moving parts` });
+    this.log.push({ at: 0.06, agent: "swarm", verb: "scan", text: `${merged.length} of ${this.nodes.length} services are duplicates or dead weight` });
+    this.nodes.forEach((n, i) => {
+      if (n.kept) return;
       this.log.push({
         at: n.start + n.dur,
-        agent: agentName((i * 37) % this.agentCount),
+        agent: owner.get(i) ?? "swarm",
         verb: "merge",
         text: `${n.def.label} → ${n.clean.label}: ${mergeNotes[n.def.id] ?? ""}`,
       });
     });
-    this.log.push({ at: 0.79, agent: "swarm", verb: "verify", text: "every client still reaches every store" });
-    this.log.push({ at: 0.86, agent: "swarm", verb: "ship", text: `${cleanNodes.length} services, traffic flowing` });
+    this.log.push({ at: 0.74, agent: "swarm", verb: "verify", text: "every client still reaches every store" });
+    this.log.push({ at: 0.8, agent: "swarm", verb: "ship", text: `${cleanNodes.length} services, traffic flowing` });
     this.log.sort((a, b) => a.at - b.at);
   }
 
@@ -349,8 +351,8 @@ export class SwarmScene {
       }
     }
     for (const e of this.edges) {
-      const end = Math.min(this.nodes[e.a].alpha, this.nodes[e.b].alpha);
-      e.alpha = (1 - smooth((p - e.cutAt) / 0.035)) * end;
+      const end = e.keep ? 1 : Math.min(this.nodes[e.a].alpha, this.nodes[e.b].alpha);
+      e.alpha = (1 - smooth((p - e.cutAt) / (e.keep ? 0.06 : 0.035))) * end;
     }
     for (const c of this.cEdges) c.drawn = easeOut(clamp01((p - c.start) / 0.07));
   }
@@ -406,8 +408,8 @@ export class SwarmScene {
       this.drawMessyPackets(t);
       this.drawCleanPackets(p, t);
     }
-    this.drawAgents(p, t);
-    for (const n of this.nodes) this.drawNode(n, p, t, hoverId === n.def.id);
+    for (const n of this.nodes) this.drawNode(n, t, hoverId === n.def.id);
+    this.drawAgents(p);
     ctx.globalAlpha = 1;
   }
 
@@ -418,7 +420,7 @@ export class SwarmScene {
       if (e.alpha <= 0.01) continue;
       const a = this.nodes[e.a].pos, b = this.nodes[e.b].pos;
       // Just before an edge is cut, it lights up: an agent is on it.
-      const snip = smooth((p - (e.cutAt - 0.03)) / 0.02) * (1 - smooth((p - e.cutAt) / 0.03));
+      const snip = e.keep ? 0 : smooth((p - (e.cutAt - 0.03)) / 0.02) * (1 - smooth((p - e.cutAt) / 0.03));
       ctx.globalAlpha = e.alpha * (e.hot ? 0.55 : 0.32) + snip * 0.6;
       ctx.strokeStyle = snip > 0.2 ? colors.accent : e.hot ? colors.warn : colors.line;
       ctx.lineWidth = 1 + snip * 1.2;
@@ -506,74 +508,123 @@ export class SwarmScene {
     return lerpV(r.pts[lo], r.pts[hi], (d - r.len[lo]) / seg);
   }
 
-  private agentPos(a: Agent, p: number, t: number): V | null {
-    const home = this.nodes[a.home];
-    const working = home.k > 0 && home.k < 1 ? 1 - Math.abs(home.k - 0.5) * 2 : 0;
-    const radius = a.radius * (1 - working * 0.55);
-    const ang = a.phase + (this.reduced ? 0 : t * a.speed * (1 + working * 1.5)) + p * 24 * Math.sign(a.speed);
-    let orbit: V = { x: home.pos.x + Math.cos(ang) * radius, y: home.pos.y + Math.sin(ang) * radius * 0.8 };
-
-    if (a.cut >= 0) {
-      const e = this.edges[a.cut];
-      const w = smooth((p - (e.cutAt - 0.06)) / 0.03) * (1 - smooth((p - (e.cutAt + 0.01)) / 0.03));
-      if (w > 0) {
-        const mid = lerpV(this.nodes[e.a].pos, this.nodes[e.b].pos, 0.5);
-        orbit = lerpV(orbit, { x: mid.x + Math.cos(ang) * 3, y: mid.y + Math.sin(ang) * 3 }, w);
-      }
-    }
-
-    const travel = 0.08;
-    if (p < a.arrive) {
-      const k = clamp01((p - (a.arrive - travel)) / travel);
-      if (k <= 0) return null;
-      const spawn = this.vertical
-        ? { x: this.w * (0.2 + a.spawn.x * 0.6), y: this.h + 30 }
-        : { x: -30, y: this.h * (0.3 + a.spawn.y * 0.4) };
-      const ctrl = this.vertical
-        ? { x: lerp(spawn.x, orbit.x, 0.5) + a.bend * 120, y: lerp(spawn.y, orbit.y, 0.5) }
-        : { x: lerp(spawn.x, orbit.x, 0.5), y: lerp(spawn.y, orbit.y, 0.5) + a.bend * 160 };
-      return quad(spawn, ctrl, orbit, easeOut(k));
-    }
-    if (p > a.leave) {
-      const k = clamp01((p - a.leave) / 0.07);
-      if (k >= 1) return null;
-      const exit = this.vertical
-        ? { x: this.w * (0.2 + a.spawn.x * 0.6), y: -30 }
-        : { x: this.w + 30, y: this.h * (0.3 + a.spawn.y * 0.4) };
-      const ctrl = this.vertical
-        ? { x: lerp(orbit.x, exit.x, 0.5) + a.exitBend * 120, y: lerp(orbit.y, exit.y, 0.5) }
-        : { x: lerp(orbit.x, exit.x, 0.5), y: lerp(orbit.y, exit.y, 0.5) + a.exitBend * 160 };
-      return quad(orbit, ctrl, exit, easeIn(k));
-    }
-    return orbit;
+  /** Just outside the canvas edge closest to a point. */
+  private offEdge(pt: V, jitter: number): V {
+    const m = 24;
+    const d = [pt.x, this.w - pt.x, pt.y, this.h - pt.y];
+    const k = d.indexOf(Math.min(...d));
+    const j = (jitter - 0.5) * 80;
+    if (k === 0) return { x: -m, y: pt.y + j };
+    if (k === 1) return { x: this.w + m, y: pt.y + j };
+    if (k === 2) return { x: pt.x + j, y: -m };
+    return { x: pt.x + j, y: this.h + m };
   }
 
-  private drawAgents(p: number, t: number) {
+  private glide(from: V, to: V, k: number, bend: number): V {
+    const dx = to.x - from.x, dy = to.y - from.y;
+    const ctrl = { x: (from.x + to.x) / 2 - dy * 0.22 * bend, y: (from.y + to.y) / 2 + dx * 0.22 * bend };
+    return quad(from, ctrl, to, easeInOut(clamp01(k)));
+  }
+
+  /** Where an agent is at progress p, and whether it is holding a node. */
+  private agentPos(a: Agent, p: number): { pos: V; pressed: boolean; alpha: number } | null {
+    let from: V | null = null;
+    let freeSince = 0;
+    for (let i = 0; i < a.tasks.length; i++) {
+      const task = a.tasks[i];
+      const node = this.nodes[task.node];
+      const leaveAt = from ? freeSince : Math.max(0, task.grab - TRAVEL);
+      if (!from) from = this.offEdge(this.messyPx(node), a.spawn.y);
+      if (p < leaveAt) return i === 0 ? null : { pos: from, pressed: false, alpha: 1 };
+      if (p < task.grab) {
+        const k = (p - leaveAt) / (task.grab - leaveAt);
+        return { pos: this.glide(from, node.pos, k, a.bend), pressed: false, alpha: i === 0 ? smooth(k / 0.3) : 1 };
+      }
+      if (p <= task.end) return { pos: node.pos, pressed: true, alpha: 1 };
+      from = { ...node.pos };
+      freeSince = task.end;
+    }
+    // Done: fly out through the nearest edge.
+    const k = (p - freeSince) / TRAVEL;
+    if (k >= 1 || !from) return null;
+    const exit = this.offEdge(from, a.spawn.x);
+    return { pos: this.glide(from, exit, k, a.exitBend), pressed: false, alpha: 1 - smooth((k - 0.6) / 0.4) };
+  }
+
+  private drawAgents(p: number) {
     const { ctx, colors } = this;
-    ctx.strokeStyle = colors.accent;
-    ctx.fillStyle = colors.accent;
-    ctx.lineCap = "round";
-    for (const a of this.agents) {
-      const pos = this.agentPos(a, p, t);
-      if (!pos) { a.prev = null; continue; }
-      if (a.prev && dist(a.prev, pos) < 70) {
-        ctx.globalAlpha = 0.45;
-        ctx.lineWidth = 1.5;
+    if (this.agentStyle === "dot") {
+      ctx.strokeStyle = colors.accent;
+      ctx.fillStyle = colors.accent;
+      ctx.lineCap = "round";
+      for (const a of this.agents) {
+        const st = this.agentPos(a, p);
+        if (!st) { a.prev = null; continue; }
+        if (a.prev && dist(a.prev, st.pos) < 70) {
+          ctx.globalAlpha = 0.45 * st.alpha;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(a.prev.x, a.prev.y);
+          ctx.lineTo(st.pos.x, st.pos.y);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = st.alpha;
         ctx.beginPath();
-        ctx.moveTo(a.prev.x, a.prev.y);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
+        ctx.arc(st.pos.x, st.pos.y, st.pressed ? 2.6 : 2, 0, Math.PI * 2);
+        ctx.fill();
+        a.prev = st.pos;
       }
-      ctx.globalAlpha = 0.95;
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, 2, 0, Math.PI * 2);
-      ctx.fill();
-      a.prev = pos;
+      ctx.lineCap = "butt";
+      return;
     }
-    ctx.lineCap = "butt";
+
+    // Cursors: an arrow with its tip on the agent; every sixth wears a name tag.
+    const base = this.vertical ? 0.78 : 0.92;
+    const tagFont = `500 ${this.vertical ? 8.5 : 9.5}px "Geist Mono", ui-monospace, monospace`;
+    ctx.lineJoin = "round";
+    this.agents.forEach((a, i) => {
+      const st = this.agentPos(a, p);
+      if (!st) return;
+      // A held cursor sits a hair down and to the right, as if pressed.
+      const s = base * (st.pressed ? 0.9 : 1);
+      const x = st.pos.x + (st.pressed ? 1 : 0);
+      const y = st.pos.y + (st.pressed ? 1 : 0);
+      ctx.globalAlpha = st.alpha;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + 13 * s);
+      ctx.lineTo(x + 3.4 * s, y + 9.9 * s);
+      ctx.lineTo(x + 5.8 * s, y + 15.2 * s);
+      ctx.lineTo(x + 8 * s, y + 14.2 * s);
+      ctx.lineTo(x + 5.7 * s, y + 9.1 * s);
+      ctx.lineTo(x + 10 * s, y + 9.1 * s);
+      ctx.closePath();
+      ctx.fillStyle = colors.accent;
+      ctx.strokeStyle = colors.paper;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      ctx.fill();
+
+      if (i % 6 !== 0) return;
+      ctx.font = tagFont;
+      const w = ctx.measureText(a.name).width + 10;
+      const h = this.vertical ? 14 : 16;
+      // Tags flip to the left of the cursor near the right edge, so they never clip.
+      const tx = x + 9 * s + w > this.w - 2 ? x - w - 2 : x + 9 * s;
+      const ty = y + 13 * s;
+      ctx.fillStyle = colors.accent;
+      ctx.beginPath();
+      ctx.roundRect(tx, ty, w, h, 3);
+      ctx.fill();
+      ctx.fillStyle = colors.onAccent;
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.fillText(a.name, tx + 5, ty + h / 2 + 0.5);
+    });
+    ctx.lineJoin = "miter";
   }
 
-  private drawNode(n: RNode, p: number, t: number, hover: boolean) {
+  private drawNode(n: RNode, t: number, hover: boolean) {
     if (n.alpha <= 0.01) return;
     const { ctx, colors } = this;
     const { x, y } = n.pos;
@@ -581,16 +632,19 @@ export class SwarmScene {
     const kind: Kind = settled > 0.5 ? n.clean.kind : n.def.kind;
     const size = lerp(4.5, 6, settled) * (n.kept ? 1 : lerp(1, 0.6, smooth(n.k)));
 
-    // Scan ring: agents have arrived and are inspecting this node.
-    const scan = smooth((p - n.scanAt) / 0.04) * (1 - smooth((n.k - 0.1) / 0.3));
-    if (scan > 0.01) {
-      ctx.globalAlpha = scan * n.alpha * 0.9;
+    // Selection box while a cursor holds this node, like dragging in a design tool.
+    const held = n.k > 0 && n.k < 1 ? smooth(n.k / 0.08) * (1 - smooth((n.k - 0.88) / 0.12)) : 0;
+    if (held > 0.01 && n.alpha > 0.05) {
+      const b = size + 5;
+      ctx.globalAlpha = held * n.alpha;
       ctx.strokeStyle = colors.accent;
       ctx.lineWidth = 1;
-      const a0 = (this.reduced ? 0 : t * 2.2) + n.seed;
-      ctx.beginPath();
-      ctx.arc(x, y, size + 6, a0, a0 + Math.PI * 1.2);
-      ctx.stroke();
+      ctx.strokeRect(x - b, y - b, b * 2, b * 2);
+      ctx.fillStyle = colors.paper;
+      for (const [cx, cy] of [[-b, -b], [b, -b], [-b, b], [b, b]]) {
+        ctx.fillRect(x + cx - 1.75, y + cy - 1.75, 3.5, 3.5);
+        ctx.strokeRect(x + cx - 1.75, y + cy - 1.75, 3.5, 3.5);
+      }
     }
 
     // Hot nodes pulse while the system is still tangled.
@@ -654,7 +708,7 @@ export class SwarmScene {
 
     // Label: cross-fades from the messy name to the clean name as the node settles.
     const fontSize = this.vertical ? 9.5 : 11;
-    ctx.font = `${hover ? 600 : 450} ${fontSize}px "Geist Mono", ui-monospace, monospace`;
+    ctx.font = `${hover ? 500 : 450} ${fontSize}px "Geist Mono", ui-monospace, monospace`;
     const drawLabel = (text: string, alpha: number, color: string) => {
       if (alpha <= 0.02) return;
       ctx.globalAlpha = alpha;
@@ -670,7 +724,9 @@ export class SwarmScene {
       }
     };
     const tangledLabelAlpha = this.vertical ? 0 : 0.85;
-    const showMessy = (1 - settled) * n.alpha * (hover ? 1 : tangledLabelAlpha);
+    // A merging node's label goes quiet once it's picked up, so converging labels don't pile up.
+    const quiet = n.kept ? 1 : 1 - smooth(n.k / 0.25);
+    const showMessy = (1 - settled) * n.alpha * quiet * (hover ? 1 : tangledLabelAlpha);
     drawLabel(n.def.label, showMessy, n.def.hot ? colors.warn : colors.muted);
     if (n.kept) drawLabel(n.clean.label, settled, hover ? colors.accent : colors.ink);
   }
