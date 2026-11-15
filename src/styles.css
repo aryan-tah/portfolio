@@ -1042,8 +1042,11 @@ strong {
   gap: 12px;
 }
 
+/* A long sentence on a screen that also holds the diagram, so it uses the
+   block-title size and stays on one line on desktop. */
 .swarm-head .display {
-  font-size: var(--fs-d2);
+  font-size: var(--fs-d3);
+  line-height: 1.1;
 }
 
 .swarm-canvas-wrap {
