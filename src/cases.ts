@@ -167,8 +167,8 @@ const cases: Case[] = [
     slug: "moderation",
     kicker: "Vennbee · trust and safety",
     title: "Moderation that keeps a new social network clean without banning Harshit",
-    line: "Every name, bio, post, space and link checked, to pass Apple's rules for user content, without punishing real names.",
-    stats: [["41,861", "blocked link hosts"], ["12", "kinds of content checked"], ["~$40", "per million checks"]],
+    line: "Every kind of user content covered, to meet Apple's rules for user content, without punishing people for their real names.",
+    stats: [["41,861", "blocked link hosts"], ["Every", "surface reportable"], ["Live", "in Vennbee today"]],
     visual: moderationVisual,
   },
   {

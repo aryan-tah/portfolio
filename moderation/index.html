@@ -4,11 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Moderation case study · Aryan Tah</title>
-    <meta name="description" content="How I built Vennbee&#x27;s moderation to pass Apple&#x27;s rules for user-generated content without wrongly banning real people." />
+    <meta name="description" content="How I approached moderation for Vennbee: covering every kind of user content to meet Apple&#x27;s rules, without punishing people for their own names." />
     <meta name="author" content="Aryan Tah" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Moderation case study" />
-    <meta property="og:description" content="How I built Vennbee&#x27;s moderation to pass Apple&#x27;s rules for user-generated content without wrongly banning real people." />
+    <meta property="og:description" content="How I approached moderation for Vennbee: covering every kind of user content to meet Apple&#x27;s rules, without punishing people for their own names." />
     <meta property="og:image" content="https://aryantah.com/og.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
@@ -39,67 +39,57 @@
 
     <main id="main" class="cs">
       <header class="cs-head">
-        <p class="eyebrow mono">Case study · <a class="vlink" href="https://vennbee.com" rel="noopener"><img class="vlogo" src="../vennbee.png" alt="" width="16" height="16" />Vennbee</a> · March to November 2026</p>
+        <p class="eyebrow mono">Case study · <a class="vlink" href="https://vennbee.com" rel="noopener"><img class="vlogo" src="../vennbee.png" alt="" width="16" height="16" />Vennbee</a> · 2026</p>
         <h1 class="display cs-title">Moderation that keeps a new social network clean without banning Harshit.</h1>
-        <p class="cs-lede">Apple won't ship a social app until every kind of user content can be filtered, reported and acted on. Vennbee only moderated posts. Names, bios, spaces and links went public the instant they were written. I rebuilt moderation to cover all of it, cheaply, and without punishing people for their own names.</p>
-        <dl class="cs-meta"><div><dt class="mono">Role</dt><dd>Built most of it: 66 of the 82 commits to the moderation code. Nidheesh Vakharia built reporting for threads and chats, and name and meetup checks.</dd></div><div><dt class="mono">Timeline</dt><dd>Post moderation in March. The full rebuild in September, before App Review.</dd></div><div><dt class="mono">Stack</dt><dd>NestJS, PostgreSQL, BullMQ workers and an AI moderation model.</dd></div></dl>
+        <p class="cs-lede">Apple won't ship a social app until every kind of user content can be filtered, reported and acted on. When we started, Vennbee only checked posts. I led the work to cover everything else, without treating people's real names as offensive.</p>
+        <dl class="cs-meta"><div><dt class="mono">Role</dt><dd>Built most of it. Nidheesh Vakharia built parts of reporting.</dd></div><div><dt class="mono">Timeline</dt><dd>Post checks in March 2026; full coverage before App Review.</dd></div><div><dt class="mono">Stack</dt><dd>NestJS, PostgreSQL, background workers and an AI moderation model.</dd></div></dl>
       </header>
 
-      <dl class="cs-stats"><div><dt class="mono">hosts on the link blocklist</dt><dd>41,861</dd><span class="mono">up from 6 typed by hand</span></div><div><dt class="mono">kinds of content checked</dt><dd>12</dd><span class="mono">names, bios, posts, spaces and more</span></div><div><dt class="mono">things anyone can report</dt><dd>10</dd><span class="mono">from 8 reasons</span></div><div><dt class="mono">per million name checks</dt><dd>~$40</dd><span class="mono">about 1/20 of a cent each</span></div></dl>
+      <dl class="cs-stats"><div><dt class="mono">hosts on the link blocklist</dt><dd>41,861</dd><span class="mono">up from 6 typed by hand</span></div><div><dt class="mono">kind of user content covered</dt><dd>Every</dd><span class="mono">names, bios, posts, spaces, links</span></div><div><dt class="mono">on every surface</dt><dd>Report</dd><span class="mono">as App Review expects</span></div><div><dt class="mono">in Vennbee today</dt><dd>Live</dd></div></dl>
 
       <section class="cs-section" aria-labelledby="s1">
         <p class="eyebrow mono">01</p>
-        <h2 id="s1" class="display">Only posts were safe.</h2>
-        <div class="cs-body"><p>In March I built a worker that checked every post: captions, images, video frames and audio. That covered the obvious surface. It missed everything else.</p><p>Profile names, bios, space names and link titles had no checks at all, and there was no word filter anywhere. And App Review expects a way to report every kind of content, which we didn't have either. Before submitting, I wrote down every surface where someone could type something and checked which ones were covered. Most weren't.</p></div>
+        <h2 id="s1" class="display">Only posts were covered.</h2>
+        <div class="cs-body"><p>Our first moderation checked posts: captions, images, video and audio. Everything else a person could type, like names, bios, community names and links, went public as soon as it was saved, and not every surface had a way to report it.</p><p>Before submitting to the App Store, I listed every place someone could type something, and checked which were covered. Most weren't. That list became the plan.</p></div>
       </section>
       <section class="cs-section" aria-labelledby="s2">
         <p class="eyebrow mono">02</p>
-        <h2 id="s2" class="display">The constraints.</h2>
-        <ul class="cs-list"><li><strong>Names can't wait.</strong> A post can sit hidden for 30 seconds while it's checked. A display name can't; it's someone's identity. Names had to be checked during the request.</li><li><strong>Real names aren't slurs.</strong> Harshit contains “shit”. Dickens contains another word. A filter that bans people for their own names is worse than no filter.</li><li><strong>A vendor outage can't block signups.</strong> If the moderation model is down, people still need to be able to create an account.</li><li><strong>Cheap enough to check everything.</strong> Every name and bio, every time it changes.</li><li><strong>Don't build a second system.</strong> Reuse the queues and workers we already had.</li></ul>
+        <h2 id="s2" class="display">What it had to get right.</h2>
+        <ul class="cs-list"><li><strong>Real names aren't slurs.</strong> Harshit contains a swear word. So do plenty of surnames. A filter that bans people for their own names is worse than no filter.</li><li><strong>Signups can't break.</strong> Moderation can't become the reason someone can't create an account.</li><li><strong>Cheap enough to check everything.</strong> Every name and bio, every time it changes, on a pre-revenue budget.</li><li><strong>Reuse what we have.</strong> No second pipeline: the same workers and queues the app already runs.</li></ul>
       </section>
       <section class="cs-section" aria-labelledby="s3">
         <p class="eyebrow mono">03</p>
-        <h2 id="s3" class="display">Five decisions.</h2>
+        <h2 id="s3" class="display">The principles.</h2>
 
         <article class="cs-decision">
-          <h3><span class="mono">A</span>Two tiers: block a few words, flag the rest.</h3>
-          <p>A short list of unambiguous terms is blocked outright. Everything else that looks suspicious goes through and is flagged for review. Most of what a word list catches is a false positive; a person should decide those.</p>
-          <p class="cs-cost"><span class="mono">Cost</span>A borderline name can be live for a while before someone reviews it. I'll take that over banning Harshit.</p>
+          <h3><span class="mono">A</span>A person decides the borderline cases.</h3>
+          <p>Clear-cut content is handled automatically. Anything ambiguous goes to a human, because most of what an automatic filter catches in names is a false positive.</p>
+          <p class="cs-cost"><span class="mono">Tradeoff</span>Review takes people's time. It's still cheaper than wrongly banning someone on day one.</p>
         </article>
         <article class="cs-decision">
-          <h3><span class="mono">B</span>Fail open, then catch up.</h3>
-          <p>If the model is down, the write goes through and is checked again later. A sweep finds anything that never got checked and runs it again.</p>
-          <p class="cs-cost"><span class="mono">Caught</span>A bug in how jobs were named silently dropped every fail-open check. The sweep is what made it visible, and it's why the sweep exists.</p>
+          <h3><span class="mono">B</span>Consistent everywhere.</h3>
+          <p>The same standard applies to a name, a bio, a post or an image, so content doesn't pass in one place and fail in another.</p>
+          <p class="cs-cost"><span class="mono">Tradeoff</span>We passed on cheaper options that would have used different rules for different content.</p>
         </article>
         <article class="cs-decision">
-          <h3><span class="mono">C</span>One scale for everything.</h3>
-          <p>Text, images, video and audio are scored on the same scale by the same vendor. Two different systems could reject a bio at 9:00 and pass the same bio at 9:01.</p>
-          <p class="cs-cost"><span class="mono">Cost</span>We gave up a free moderation endpoint. It would have saved about $40 per million checks, and it couldn't handle a burst of signups anyway.</p>
+          <h3><span class="mono">C</span>Never say the word back.</h3>
+          <p>When something is rejected, the message says so without repeating what was offensive.</p>
+          <p class="cs-cost"><span class="mono">Mistake</span>An early version echoed the offending word in the error. It was fixed the same day.</p>
         </article>
         <article class="cs-decision">
-          <h3><span class="mono">D</span>Strikes follow the person, not the profile.</h3>
-          <p>Vennbee lets you have several profiles. Strikes count against the account, so starting a fresh profile isn't an escape. Repeated strikes lead to a temporary restriction, not a ban.</p>
-          <p class="cs-cost"><span class="mono">Fixed</span>Posts and names first kept separate strike counts, which quietly doubled everyone's chances. One ledger now.</p>
-        </article>
-        <article class="cs-decision">
-          <h3><span class="mono">E</span>Never say the word back.</h3>
-          <p>When something is rejected, the error tells you it was rejected, not which word did it.</p>
-          <p class="cs-cost"><span class="mono">Mistake</span>My first version echoed the offending word in the error message. It was gone the same day.</p>
+          <h3><span class="mono">D</span>Built for review, not just detection.</h3>
+          <p>Every report and decision lands in a dashboard with an audit trail, so a human can see what happened and why.</p>
+          <p class="cs-cost"><span class="mono">Why</span>Moderation that nobody can inspect is moderation nobody can trust or fix.</p>
         </article>
       </section>
       <section class="cs-section" aria-labelledby="s4">
         <p class="eyebrow mono">04</p>
-        <h2 id="s4" class="display">How it came together.</h2>
-        <ol class="cs-timeline"><li><time class="mono">Mar 27</time><p>A worker that checks every post: captions, images, video frames, audio.</p></li><li><time class="mono">Aug 19</time><p>Reporting for threads and chats (built by Nidheesh).</p></li><li><time class="mono">Sep 2</time><p>The design for covering every surface.</p></li><li><time class="mono">Sep</time><p>Shipped in five phases, with a dashboard and audit trail for reviewing reports.</p></li><li><time class="mono">Sep 25</time><p>Notes for Apple's reviewers explaining how moderation works.</p></li><li><time class="mono">Oct 3</time><p>A filter that learns real names are fine, so Harshit stays Harshit.</p></li><li><time class="mono">Nov 3</time><p>Meetups moderated too.</p></li></ol>
-      </section>
-      <section class="cs-section" aria-labelledby="s5">
-        <p class="eyebrow mono">05</p>
-        <h2 id="s5" class="display">What went wrong, and what I'd keep.</h2>
-        <ul class="cs-list"><li><strong>The model will change under you.</strong> Our vendor retired a model and video moderation broke overnight. Pin versions and alert when a check starts failing.</li><li><strong>Every exception is a hole.</strong> An allowlist entry meant for real names let a crude username through. That's what pushed the design to two tiers: the word list proposes, the model decides.</li><li><strong>Count the surfaces first.</strong> The list of every place a person can type something was the most useful document in the project. Three report types were still missing from the server when I checked it against that list.</li></ul>
+        <h2 id="s4" class="display">What I learned.</h2>
+        <ul class="cs-list"><li><strong>Count the surfaces first.</strong> The list of every place a person can type something was the most useful document in the project.</li><li><strong>Every exception is a decision.</strong> Allowing one name is easy; making sure that rule doesn't open a hole elsewhere is the real work.</li><li><strong>Plan for your vendors to change.</strong> AI models get retired. Moderation that depends on one needs alerts for when it stops working.</li></ul>
       </section>
 
       <footer class="cs-foot">
-        <p class="fine mono">This write-up covers what Vennbee's moderation does and why. Thresholds, prompts and word lists stay private, on purpose.</p>
+        <p class="fine mono">Vennbee is live, so this write-up stays at the level of principles. How the checks work stays private, on purpose.</p>
         <div class="cs-foot-links">
           <a class="btn btn-primary" href="https://vennbee.com" rel="noopener"><img class="vlogo" src="../vennbee.png" alt="" width="18" height="18" />Try Vennbee</a>
           <a class="btn" href="../#cases">All case studies</a>
