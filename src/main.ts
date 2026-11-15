@@ -130,12 +130,15 @@ function mountSwarm() {
   $("#swarm-title").textContent = `A backend with ${messyNodes.length} services. It needs ${cleanNodes.length}.`;
 
   const small = window.innerWidth < 720;
-  const scene = new SwarmScene(canvas, small ? 130 : 240);
+  // ?agents=dots draws the swarm as dots instead of cursors.
+  const dots = new URLSearchParams(location.search).get("agents") === "dots";
+  const scene = new SwarmScene(canvas, dots ? (small ? 130 : 240) : small ? 60 : 130);
+  scene.agentStyle = dots ? "dot" : "cursor";
   scene.reduced = reduced;
 
   // The rebuild plays on its own once the diagram is fully in view, pauses if it
   // leaves, and the clean system keeps running traffic after it finishes.
-  const DURATION = 18; // seconds, start to finish
+  const DURATION = 10; // seconds, start to finish
   const playBtn = $<HTMLButtonElement>("[data-swarm-play]");
   let p = 0;
   let running = false; // render loop (any part of the section on screen)

@@ -106,7 +106,7 @@ export type Stats = { services: number; edges: number; crossings: number; waste:
 
 export type Hit = { label: string; text: string; x: number; y: number; state: "tangled" | "clean" };
 
-type Palette = { ink: string; muted: string; line: string; accent: string; warn: string; paper: string };
+type Palette = { ink: string; muted: string; line: string; accent: string; onAccent: string; warn: string; paper: string };
 
 export class SwarmScene {
   private ctx: CanvasRenderingContext2D;
@@ -126,6 +126,7 @@ export class SwarmScene {
   readonly log: LogLine[] = [];
   readonly agentCount: number;
   reduced = false;
+  agentStyle: "cursor" | "dot" = "cursor";
 
   constructor(private canvas: HTMLCanvasElement, agentCount: number) {
     this.ctx = canvas.getContext("2d")!;
@@ -142,6 +143,7 @@ export class SwarmScene {
       muted: v("--muted"),
       line: v("--line-strong"),
       accent: v("--accent"),
+      onAccent: v("--on-accent"),
       warn: v("--warn"),
       paper: v("--paper"),
     };
@@ -549,6 +551,7 @@ export class SwarmScene {
   }
 
   private drawAgents(p: number, t: number) {
+    if (this.agentStyle === "cursor") return this.drawCursors(p, t);
     const { ctx, colors } = this;
     ctx.strokeStyle = colors.accent;
     ctx.fillStyle = colors.accent;
@@ -571,6 +574,53 @@ export class SwarmScene {
       a.prev = pos;
     }
     ctx.lineCap = "butt";
+  }
+
+  /** Agents as multiplayer cursors: an arrow with its tip on the agent, a few with name tags. */
+  private drawCursors(p: number, t: number) {
+    const { ctx, colors } = this;
+    const s = this.vertical ? 0.75 : 0.9;
+    const tagFont = `500 ${this.vertical ? 8.5 : 9.5}px "Geist Mono", ui-monospace, monospace`;
+    ctx.lineJoin = "round";
+    this.agents.forEach((a, i) => {
+      const pos = this.agentPos(a, p, t);
+      if (!pos) return;
+      const { x, y } = pos;
+      ctx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + 13 * s);
+      ctx.lineTo(x + 3.4 * s, y + 9.9 * s);
+      ctx.lineTo(x + 5.8 * s, y + 15.2 * s);
+      ctx.lineTo(x + 8 * s, y + 14.2 * s);
+      ctx.lineTo(x + 5.7 * s, y + 9.1 * s);
+      ctx.lineTo(x + 10 * s, y + 9.1 * s);
+      ctx.closePath();
+      ctx.fillStyle = colors.accent;
+      ctx.strokeStyle = colors.paper;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      ctx.fill();
+
+      // Every twelfth cursor carries a name tag, like people in a shared canvas.
+      if (i % 12 !== 0) return;
+      const name = "agent-" + String(i).padStart(3, "0");
+      ctx.font = tagFont;
+      const w = ctx.measureText(name).width + 10;
+      const h = this.vertical ? 14 : 16;
+      // Tags flip to the left of the cursor near the right edge, so they never clip.
+      const tx = x + 9 * s + w > this.w - 2 ? x - w - 2 : x + 9 * s;
+      const ty = y + 13 * s;
+      ctx.fillStyle = colors.accent;
+      ctx.beginPath();
+      ctx.roundRect(tx, ty, w, h, 3);
+      ctx.fill();
+      ctx.fillStyle = colors.onAccent;
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.fillText(name, tx + 5, ty + h / 2 + 0.5);
+    });
+    ctx.lineJoin = "miter";
   }
 
   private drawNode(n: RNode, p: number, t: number, hover: boolean) {
