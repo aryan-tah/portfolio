@@ -218,6 +218,51 @@ body::before {
   mask-repeat: var(--bg-mask-repeat);
 }
 
+/* Vennbee's mark, used wherever Vennbee is named. */
+.vlogo {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  margin-right: 0.4em;
+  border-radius: 24%;
+  vertical-align: -0.24em;
+}
+
+/* Inline so it sits on the same baseline as the text around it. */
+.vlink {
+  text-decoration: none;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.contact-links .vlink span {
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
+}
+
+.hero-eyebrow .vlink {
+  color: var(--ink);
+}
+
+.nav-vb {
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-vb .vlogo {
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+}
+
+.btn .vlogo {
+  width: 18px;
+  height: 18px;
+  margin-right: 0;
+  border-radius: 5px;
+}
+
 ::selection {
   background: var(--accent);
   color: var(--on-accent);
@@ -431,6 +476,7 @@ strong {
   .nav-clock { display: none; }
   .nav nav a { padding: 8px 7px; font-size: var(--fs-sm); }
   .nav nav a[href="#contact"] { display: none; }
+  .nav-vb span { display: none; }
 }
 
 /* ---------------------------------------------------------------------------
