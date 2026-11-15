@@ -92,14 +92,10 @@ export function mountForager(root: HTMLElement, reduced: boolean) {
   const chipsEl = root.querySelector<HTMLElement>("[data-fchips]")!;
   const stagesEl = root.querySelector<HTMLElement>("[data-fstages]")!;
   const noteEl = root.querySelector<HTMLElement>("[data-fnote]")!;
-  const picks = root.querySelector<HTMLElement>("[data-fpicks]")!;
   const live = root.querySelector<HTMLElement>("[data-flive]")!;
 
   stagesEl.innerHTML = STAGES.map((s) => `<li>${s}</li>`).join("");
   const stageEls = [...stagesEl.children] as HTMLElement[];
-
-  picks.innerHTML = demos.map((d, i) => `<button type="button" role="radio" data-i="${i}">${esc(d.q)}</button>`).join("");
-  const pickEls = [...picks.querySelectorAll<HTMLButtonElement>("button")];
 
   let timers: number[] = [];
   let current = -1;
@@ -114,10 +110,6 @@ export function mountForager(root: HTMLElement, reduced: boolean) {
     timers = [];
     current = i;
     const d = demos[i];
-    pickEls.forEach((b, k) => {
-      b.setAttribute("aria-checked", String(k === i));
-      b.tabIndex = k === i ? 0 : -1;
-    });
     live.textContent = `${d.q}: ${d.chips.map((c) => `${c.k} ${c.v}${c.tag ? ` (${c.tag})` : ""}`).join(", ")}. ${d.note}`;
 
     chipsEl.innerHTML = "";
@@ -159,21 +151,6 @@ export function mountForager(root: HTMLElement, reduced: boolean) {
     }, 6400);
   };
 
-  picks.addEventListener("click", (e) => {
-    const b = (e.target as HTMLElement).closest<HTMLButtonElement>("button");
-    if (!b) return;
-    play(Number(b.dataset.i));
-    schedule();
-  });
-  picks.addEventListener("keydown", (e) => {
-    if (!["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) return;
-    e.preventDefault();
-    const d = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : -1;
-    const next = (current + d + demos.length) % demos.length;
-    play(next);
-    pickEls[next].focus();
-    schedule();
-  });
   const panel = root.querySelector<HTMLElement>(".fdemo")!;
   panel.addEventListener("pointerenter", () => (held = true));
   panel.addEventListener("pointerleave", () => (held = false));
