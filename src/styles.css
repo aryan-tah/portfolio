@@ -786,7 +786,7 @@ strong {
 .roll-track {
   display: flex;
   flex-direction: column;
-  transition: transform 560ms var(--ease-in-out);
+  transition: transform 420ms var(--ease-in-out);
 }
 
 .roll-track span {

@@ -163,7 +163,7 @@ export function mountSystem(root: HTMLElement, reduced: boolean) {
     if (reduced) return;
     timer = window.setInterval(() => {
       if (visible && !held && !document.hidden) show((current + 1) % modes.length);
-    }, 3400);
+    }, 2200);
   };
 
   tabs.addEventListener("click", (e) => {
@@ -191,7 +191,7 @@ export function mountSystem(root: HTMLElement, reduced: boolean) {
       if (!visible || started) return;
       started = true;
       root.classList.add("is-ready");
-      window.setTimeout(() => { show(0); schedule(); }, reduced ? 0 : 1000);
+      window.setTimeout(() => { show(0); schedule(); }, reduced ? 0 : 700);
     },
     { threshold: 0.35 },
   ).observe(root);
