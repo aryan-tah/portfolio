@@ -133,9 +133,14 @@ function mountSwarm() {
   const scene = new SwarmScene(canvas, small ? 130 : 240);
   scene.reduced = reduced;
 
-  let target = 0;
+  // The rebuild plays on its own once the diagram is fully in view, pauses if it
+  // leaves, and the clean system keeps running traffic after it finishes.
+  const DURATION = 18; // seconds, start to finish
+  const playBtn = $<HTMLButtonElement>("[data-swarm-play]");
   let p = 0;
-  let running = false;
+  let running = false; // render loop (any part of the section on screen)
+  let inFull = false; // diagram entirely in frame
+  let state: "idle" | "playing" | "paused" | "done" = "idle";
   let last = performance.now();
   let time = 0;
   let hover: { x: number; y: number } | null = null;
@@ -144,11 +149,20 @@ function mountSwarm() {
   let lastPhase = "";
   const lastStats: Record<string, string> = {};
 
-  const readScroll = () => {
-    const r = section.getBoundingClientRect();
-    const span = r.height - window.innerHeight;
-    target = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+  const setState = (s: typeof state) => {
+    state = s;
+    playBtn.textContent = s === "playing" ? "Pause" : s === "done" ? "Replay" : s === "paused" ? "Resume" : "Play";
+    playBtn.setAttribute("aria-label", `${playBtn.textContent} the swarm rebuild`);
+    hint.toggleAttribute("data-hidden", s !== "idle");
   };
+
+  playBtn.addEventListener("click", () => {
+    if (state === "playing") setState("paused");
+    else if (state === "done") {
+      p = 0;
+      setState("playing");
+    } else setState("playing");
+  });
 
   const renderLog = (lines: LogLine[]) => {
     const shown = lines.slice(-9);
@@ -164,13 +178,13 @@ function mountSwarm() {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     if (!reduced) time += dt;
-    // Ease toward the scroll position so fast flicks still read as motion.
-    p += (target - p) * (1 - Math.exp(-dt * (reduced ? 60 : 7)));
-    if (Math.abs(target - p) < 0.0004) p = target;
+    if (state === "playing" && inFull) {
+      p = Math.min(1, p + dt / DURATION);
+      if (p >= 1) setState("done");
+    }
 
     scene.draw(p, time, hoverId);
     bar.style.transform = `scaleX(${p})`;
-    hint.toggleAttribute("data-hidden", p > 0.04);
 
     // Phase
     let phase: string = PHASES[0].key;
@@ -233,20 +247,24 @@ function mountSwarm() {
 
   new IntersectionObserver(
     ([e]) => {
-      if (e.isIntersecting) {
-        readScroll();
-        start();
-      } else {
-        running = false;
-      }
+      if (e.isIntersecting) start();
+      else running = false;
     },
     { rootMargin: "100px" },
   ).observe(section);
 
-  window.addEventListener("scroll", readScroll, { passive: true });
+  // "Entirely in frame" means the diagram, below the sticky nav.
+  new IntersectionObserver(
+    ([e]) => {
+      inFull = e.intersectionRatio >= 0.97;
+      // Autoplay once, unless reduced motion is on; then it waits for the button.
+      if (inFull && state === "idle" && !reduced) setState("playing");
+    },
+    { rootMargin: "-56px 0px 0px 0px", threshold: [0, 0.5, 0.97, 1] },
+  ).observe($(".swarm-canvas-wrap"));
+
   new ResizeObserver(() => {
     scene.resize();
-    readScroll();
     if (!running) scene.draw(p, time);
   }).observe(canvas);
 
@@ -267,8 +285,7 @@ function mountSwarm() {
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => scene.readColors());
 
   scene.resize();
-  readScroll();
-  p = target;
+  setState("idle");
 }
 
 // ---------------------------------------------------------------------------

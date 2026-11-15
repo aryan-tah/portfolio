@@ -6,13 +6,13 @@ My personal site. I'm a backend engineer and co-founder of [Vennbee](https://ven
 
 ![The swarm rebuild section, partway through](docs/swarm-tangle.png)
 
-Most portfolio sites tell you someone is good at systems. I wanted this one to show it, so the centerpiece is a diagram you scroll through. It's built from scratch in TypeScript and Canvas 2D, with no framework and about 15 KB of gzipped JavaScript.
+Most portfolio sites tell you someone is good at systems. I wanted this one to show it, so the centerpiece is a diagram that rebuilds itself while you watch. It's built from scratch in TypeScript and Canvas 2D, with no framework and about 15 KB of gzipped JavaScript.
 
 ## What's on the page
 
 **Request trace.** The hero shows a waterfall of spans, the way Jaeger or Honeycomb would draw one, cycling through four Vennbee request paths: a feed read, a hybrid search, a video upload going through moderation, and a chat message fanning out. The timings are illustrative, and the page says so.
 
-**Swarm rebuild.** A pinned section, about four screens of scroll. It starts as a deliberately tangled v0 backend: 39 services, two search services the client has to merge itself, four copies of the moderation service, a polling fallback nobody turned off. A swarm of agents flies in and inspects every node. Each agent snips edges and folds duplicates into the service that should own them. What's left settles into a layered design with 14 services, and traffic starts moving along it. Hover any node to see what was wrong with it or what it does now.
+**Swarm rebuild.** One screen. Once the diagram is fully in view, an 18-second rebuild plays on its own. It starts as a deliberately tangled v0 backend: 39 services, two search services the client has to merge itself, four copies of the moderation service, a polling fallback nobody turned off. A swarm of agents flies in and inspects every node. Each agent snips edges and folds duplicates into the service that should own them. What's left settles into a layered design with 14 services, and traffic starts moving along it. The traffic keeps flowing after the rebuild ends, and a button pauses or replays it. Hover any node to see what was wrong with it or what it does now.
 
 ![The same section after the rebuild, in dark mode](docs/swarm-clean.png)
 
@@ -37,13 +37,13 @@ npm run preview   # serves dist/
 index.html            page structure and all static copy
 src/
   content.ts          experience, projects, education, stack (edit this first)
-  main.ts             renders sections, runs the scroll loop for the swarm
+  main.ts             renders sections, runs the swarm's playback loop
   trace.ts            hero trace waterfall
   search.ts           hybrid search toy
   styles.css          tokens, layout, every component
   swarm/
     graph.ts          both architectures, merge notes, crossing counter
-    scene.ts          canvas renderer and the scroll timeline
+    scene.ts          canvas renderer and the rebuild timeline
 public/
   favicon.svg
   og.png              social preview, captured from the live swarm
@@ -51,7 +51,8 @@ public/
 
 A few decisions worth knowing about:
 
-- **The swarm is a pure function of scroll position.** Every node position, edge cut and agent path is computed from progress `p` between 0 and 1, plus a clock for ambient motion like orbiting and packets. Scroll backwards and the rebuild plays in reverse with nothing to undo. The loop eases toward the real scroll position, so a fast flick still reads as motion.
+- **The swarm is a pure function of progress.** Every node position, edge cut and agent path is computed from progress `p` between 0 and 1, plus a separate clock for ambient motion like orbiting agents and packets. Playback just advances `p`, which is why pause and replay need no extra state, and why traffic keeps moving once `p` reaches 1.
+- **It starts when you can see all of it.** A second `IntersectionObserver` watches the diagram, offset by the sticky nav, and only advances the rebuild while at least 97% of it is in frame. Scroll away mid-rebuild and it waits for you.
 - **Each messy node names its fate.** In `graph.ts`, a node with `into: "search"` folds into the clean `search` node, and a node whose `into` is its own id survives and moves to its layered position. Merging nodes chase their target's current position, so the two move together.
 - **The canvas only runs while it's on screen.** An `IntersectionObserver` starts and stops the `requestAnimationFrame` loop. Device pixel ratio is capped at 2.
 - **Wide screens lay the clean design out left to right; phones lay it out top to bottom.** The same graph, with labels moved under the nodes.
@@ -59,7 +60,7 @@ A few decisions worth knowing about:
 
 ## Accessibility
 
-- Respects `prefers-reduced-motion`: ambient motion, packets and CSS transitions turn off. The swarm still follows scroll, because scrolling is the reader's own input.
+- Respects `prefers-reduced-motion`: ambient motion, packets and CSS transitions turn off, and the swarm doesn't autoplay. It waits for the Play button.
 - Every interactive control is a real `button` or `input` and works from the keyboard. The query chips behave as a radio group with arrow keys.
 - Visible focus rings, a skip link, and hover effects limited to devices that can actually hover.
 
