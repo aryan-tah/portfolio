@@ -10,7 +10,7 @@ Most portfolio sites tell you someone is good at systems. I wanted this one to s
 
 ## What's on the page
 
-**Request trace.** The hero shows a waterfall of spans, the way Jaeger or Honeycomb would draw one, cycling through four Vennbee request paths: a feed read, a hybrid search, a video upload going through moderation, and a chat message fanning out. The timings are illustrative, and the page says so.
+**Hero.** "I build the search behind Vennbee." The highlighted word rolls through the four subsystems I own (search, feed, moderation, real-time chat), and the diagram beside it lights that subsystem's request path in Vennbee's backend, with a line on how it works. Click a subsystem to hold it. Underneath, a row of real numbers: TestFlight builds, waitlist size, blocklist size, neurons simulated, open-source stars.
 
 **Swarm rebuild.** One screen. Once the diagram is fully in view, a 6.5-second rebuild plays on its own. It starts as a deliberately tangled v0 backend: 39 services, two search services the client has to merge itself, four copies of the moderation service, a polling fallback nobody turned off. A swarm of agents, drawn as multiplayer cursors, flies in and drags each service where it belongs: duplicates into the service that should own them, survivors into a layered design with 14 services. Connections that matter stretch along with the drag and turn into clean edges; the rest get cut the moment their service is picked up. Then traffic starts moving. The traffic keeps flowing after the rebuild ends, and a button pauses or replays it. Hover any node to see what was wrong with it or what it does now.
 
@@ -38,7 +38,7 @@ index.html            page structure and all static copy
 src/
   content.ts          experience, projects, education, stack (edit this first)
   main.ts             renders sections, runs the swarm's playback loop
-  trace.ts            hero trace waterfall
+  hero.ts             rolling headline and the subsystem diagram
   search.ts           hybrid search toy
   styles.css          tokens, layout, every component
   swarm/
@@ -56,7 +56,7 @@ A few decisions worth knowing about:
 - **Each messy node names its fate.** In `graph.ts`, a node with `into: "search"` folds into the clean `search` node, and a node whose `into` is its own id survives and moves to its layered position. Merging nodes chase their target's current position, so the two move together.
 - **The canvas only runs while it's on screen.** An `IntersectionObserver` starts and stops the `requestAnimationFrame` loop. Device pixel ratio is capped at 2.
 - **Wide screens lay the clean design out left to right; phones lay it out top to bottom.** The same graph, with labels moved under the nodes.
-- **Colors live in CSS.** Each palette is defined in OKLCH and redefined for dark mode. The canvas reads the same custom properties, so the diagram follows the system theme.
+- **Type is Bricolage Grotesque for display, Geist for text and Geist Mono for labels.** **Colors live in CSS.** Each palette is defined in OKLCH and redefined for dark mode. The canvas reads the same custom properties, so the diagram follows the system theme.
 
 ## Accessibility
 
@@ -69,7 +69,7 @@ A few decisions worth knowing about:
 Fork it, then:
 
 1. Replace the copy in `src/content.ts` and the hero and contact text in `index.html`.
-2. Redraw the two architectures in `src/swarm/graph.ts`. The section's heading updates itself from the node counts.
+2. Redraw the hero diagram in `src/hero.ts` and the two swarm architectures in `src/swarm/graph.ts`. The section's heading updates itself from the node counts.
 3. Pick a palette. `src/styles.css` defines four (cobalt, signal, teal, honey), each with light and dark modes; set `data-palette` on `<html>` in `index.html`. On localhost a switcher in the bottom-right corner lets you compare them live. Each palette has one accent color and keeps it to small marks.
 4. Update the `og:image` URL in `index.html` and the source link in the footer.
 

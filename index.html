@@ -24,7 +24,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap"
     />
   </head>
   <body>
@@ -51,34 +51,50 @@
     <main id="main">
       <!-- Hero -------------------------------------------------------------->
       <section class="hero sheet" id="top" data-sheet="01">
-        <div class="hero-copy">
-          <p class="eyebrow mono">Backend engineer · Co-founder, Vennbee</p>
-          <h1 class="display">I design systems, <em>then take parts away.</em></h1>
-          <p class="lede">
-            I'm Aryan. At <a href="https://vennbee.com" rel="noopener">Vennbee</a> I own the backend: search, feed,
-            moderation and real-time chat. I study computer science at UC Riverside and graduate in 2027.
-          </p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#swarm">
-              Watch the rebuild
-              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" /></svg>
-            </a>
-            <a class="btn" href="mailto:aryan.tah7@gmail.com">aryan.tah7@gmail.com</a>
+        <div class="hero-main">
+          <div class="hero-copy">
+            <p class="eyebrow mono hero-in" style="--d: 0">Aryan Tah · Backend engineer · Co-founder, Vennbee</p>
+            <h1 class="display hero-title">
+              <span class="line"><span class="hero-in" style="--d: 1">I build the</span></span>
+              <span class="line"><span class="hero-in roll" style="--d: 2"><span class="roll-track" data-words>search</span></span></span>
+              <span class="line"><span class="hero-in" style="--d: 3">behind Vennbee.</span></span>
+              <span class="sr-only" aria-live="polite" data-word-live>search</span>
+            </h1>
+            <p class="lede hero-in" style="--d: 4">
+              Then I take parts away until it's simple. Computer science at UC Riverside, graduating 2027.
+            </p>
+            <div class="hero-actions hero-in" style="--d: 5">
+              <a class="btn btn-primary" href="#swarm">
+                Watch a rebuild
+                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" /></svg>
+              </a>
+              <a class="btn" href="mailto:aryan.tah7@gmail.com">Email me</a>
+            </div>
           </div>
+
+          <figure class="system" aria-label="Vennbee's backend. The highlighted path is the subsystem named in the headline.">
+            <div class="system-head mono">
+              <span>vennbee / backend</span>
+              <div class="system-tabs" role="tablist" aria-label="Subsystem" data-tabs></div>
+            </div>
+            <svg class="system-svg" viewBox="0 0 548 400" data-system aria-hidden="true"></svg>
+            <figcaption class="system-note" data-note>
+              Describe a community the way you'd tell a friend. Keyword match and pgvector similarity, blended in one Postgres query.
+            </figcaption>
+            <span class="crop crop-tl" aria-hidden="true"></span>
+            <span class="crop crop-tr" aria-hidden="true"></span>
+            <span class="crop crop-bl" aria-hidden="true"></span>
+            <span class="crop crop-br" aria-hidden="true"></span>
+          </figure>
         </div>
 
-        <figure class="trace" aria-label="Request trace waterfall, cycling through example Vennbee requests">
-          <figcaption class="trace-head mono">
-            <span class="trace-req" data-trace-req>GET /v1/feed</span>
-            <span class="trace-meta"><span data-trace-status>200</span> · <span data-trace-total>16.0</span> ms</span>
-          </figcaption>
-          <div class="trace-axis mono" aria-hidden="true"><span>0</span><span data-trace-mid></span><span data-trace-end></span></div>
-          <ol class="trace-rows" data-trace-rows></ol>
-          <p class="trace-foot mono">
-            <span class="trace-dots" data-trace-dots aria-hidden="true"></span>
-            Illustrative spans from Vennbee's request paths
-          </p>
-        </figure>
+        <dl class="proof mono hero-in" style="--d: 6">
+          <div><dt>TestFlight builds</dt><dd>7</dd></div>
+          <div><dt>pre-launch waitlist</dt><dd>192</dd></div>
+          <div><dt>domains on the blocklist</dt><dd>41.9K</dd></div>
+          <div><dt>neurons simulated in a tab</dt><dd>139,248</dd></div>
+          <div><dt>stars, open-source bot</dt><dd>3.1K</dd></div>
+        </dl>
       </section>
 
       <!-- Swarm rebuild ------------------------------------------------------>

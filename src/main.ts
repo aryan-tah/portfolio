@@ -1,7 +1,7 @@
 import "./styles.css";
 import { education, experience, projects, stack } from "./content";
 import { mountSearch } from "./search";
-import { mountTrace } from "./trace";
+import { mountHero } from "./hero";
 import { cleanNodes, messyNodes } from "./swarm/graph";
 import { PHASES, SwarmScene, type LogLine } from "./swarm/scene";
 
@@ -285,6 +285,8 @@ function mountSwarm() {
   const start = () => {
     if (running) return;
     running = true;
+    // Re-read the palette each time drawing starts, so the canvas never lags the CSS.
+    scene.readColors();
     last = performance.now();
     requestAnimationFrame(frame);
   };
@@ -343,6 +345,6 @@ renderWork();
 renderProjects();
 renderBackground();
 mountClock();
-mountTrace($(".trace"), reduced);
+mountHero($(".hero"), reduced);
 mountSearch($(".hybrid"));
 mountSwarm();
