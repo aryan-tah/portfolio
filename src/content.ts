@@ -44,7 +44,7 @@ export const experience: Role[] = [
     stack: ["NestJS", "PostgreSQL", "pgvector", "Redis", "BullMQ", "Socket.IO", "AWS"],
   },
   {
-    org: "UCR Information Technology Solutions",
+    org: "UCR ITS",
     title: "Student Information System intern",
     href: "https://its.ucr.edu",
     logo: "./ucr.svg",
@@ -60,6 +60,7 @@ export const experience: Role[] = [
   {
     org: "HexHomes",
     title: "UI developer",
+    logo: "./hexhomes.png",
     place: "Riverside, CA",
     dates: "Feb 2024 to May 2024",
     points: [

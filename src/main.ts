@@ -82,11 +82,15 @@ function renderWork() {
           <span>${esc(r.place)}</span>
         </div>
         <div>
-          <h3>${
-            r.href
-              ? `<a class="vlink" href="${esc(r.href)}" rel="noopener">${r.logo ? `<img class="vlogo${r.logo.endsWith(".svg") ? " flat" : ""}" src="${esc(r.logo)}" alt="" width="22" height="22" />` : ""}${esc(r.org)}</a>`
-              : esc(r.org)
-          }<span class="role-title"> · ${esc(r.title)}</span></h3>
+          <h3>${(() => {
+            // Vennbee's app icon keeps its rounded corners; other marks keep their own shape.
+            const logo = r.logo
+              ? `<img class="vlogo${r.logo.includes("vennbee") ? "" : " flat"}" src="${esc(r.logo)}" alt="" width="22" height="22" />`
+              : "";
+            return r.href
+              ? `<a class="vlink" href="${esc(r.href)}" rel="noopener">${logo}${esc(r.org)}</a>`
+              : `<span class="vlink">${logo}${esc(r.org)}</span>`;
+          })()}<span class="role-title"> · ${esc(r.title)}</span></h3>
           <ul>${r.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>
           <div class="chips">${r.stack.map((s) => `<span>${esc(s)}</span>`).join("")}</div>
         </div>

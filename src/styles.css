@@ -1338,6 +1338,11 @@ strong {
   font-weight: 400;
 }
 
+.role h3 .vlink {
+  color: var(--ink);
+  font-weight: 500;
+}
+
 .role ul {
   margin: 14px 0 0;
   padding: 0;
