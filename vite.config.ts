@@ -15,6 +15,7 @@ export default defineConfig({
         twobrains: resolve(__dirname, "twobrains/index.html"),
         foresight: resolve(__dirname, "foresight/index.html"),
         camus: resolve(__dirname, "camus/index.html"),
+        graph: resolve(__dirname, "graph/index.html"),
       },
     },
   },

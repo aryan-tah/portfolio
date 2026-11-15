@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" data-palette="cobalt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Social graph case study · Aryan Tah</title>
+    <meta name="description" content="How Vennbee&#x27;s social graph moved from Neo4j to Postgres without rewriting the app, and how its slowest reads went from seconds to milliseconds." />
+    <meta name="author" content="Aryan Tah" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Social graph case study" />
+    <meta property="og:description" content="How Vennbee&#x27;s social graph moved from Neo4j to Postgres without rewriting the app, and how its slowest reads went from seconds to milliseconds." />
+    <meta property="og:image" content="https://aryantah.com/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="../fonts/Pollen-Latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" />
+  </head>
+  <body class="cs-page">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="nav">
+      <a class="nav-mark" href="../" aria-label="Aryan Tah, home">
+        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+          <rect x="1.5" y="1.5" width="7" height="7" />
+          <rect x="11.5" y="11.5" width="7" height="7" />
+          <path d="M8.5 5h6.5v6.5" />
+        </svg>
+        <span>Aryan Tah</span>
+      </a>
+      <nav aria-label="Site">
+        <a class="nav-vb" href="https://vennbee.com" rel="noopener"><img class="vlogo" src="../vennbee.png" alt="" width="16" height="16" /><span>Vennbee</span></a>
+        <a href="../#cases">Case studies</a>
+        <a href="../#projects">Projects</a>
+        <a href="../#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main" class="cs">
+      <header class="cs-head">
+        <p class="eyebrow mono">Case study · <a class="vlink" href="https://vennbee.com" rel="noopener"><img class="vlogo" src="../vennbee.png" alt="" width="16" height="16" />Vennbee</a> · March to October 2026</p>
+        <h1 class="display cs-title">Moving a social graph into Postgres without rewriting the app.</h1>
+        <p class="cs-lede">Every vouch, membership, nested community and reply thread in Vennbee is a graph. We started on Neo4j, swapped it for Postgres running Apache AGE, and then moved the hottest reads to plain SQL. The slowest one went from about ten seconds per result to a few milliseconds.</p>
+        <dl class="cs-meta"><div><dt class="mono">Role</dt><dd>I built the graph layer and the worker that keeps it in sync, and later moved the hot paths to SQL. The engine swap was a team effort.</dd></div><div><dt class="mono">Timeline</dt><dd>Graph in March 2026. Engine swap in September. Hot paths to SQL in October.</dd></div><div><dt class="mono">Stack</dt><dd>Neo4j, then Apache AGE on PostgreSQL, openCypher, BullMQ, Redis.</dd></div></dl>
+      </header>
+
+      <dl class="cs-stats"><div><dt class="mono">graph reranking per search result</dt><dd>~10s → 3–6ms</dd><span class="mono">moved to indexed SQL</span></div><div><dt class="mono">co-member lookup</dt><dd>640ms → 1ms</dd><span class="mono">with the right indexes</span></div><div><dt class="mono">node and edge types</dt><dd>9 · 8</dd><span class="mono">one graph</span></div><div><dt class="mono">files changed for the engine swap</dt><dd>38</dd><span class="mono">a swap, not a rewrite</span></div></dl>
+
+      <section class="cs-section" aria-labelledby="s1">
+        <p class="eyebrow mono">01</p>
+        <h2 id="s1" class="display">What the graph is for.</h2>
+        <div class="cs-body"><p>Vennbee is built on relationships: who vouches for whom, who belongs to which community, which community sits inside which, and which message replies to which. The feed, friend-of-friend suggestions, “your spaces” and search ranking all read that graph.</p><p>In March I set up Neo4j and a background worker that mirrors every change from Postgres into it. Postgres stays the source of truth; the graph is a copy shaped for questions like “how close is this person to me?”</p></div>
+      </section>
+      <section class="cs-section" aria-labelledby="s2">
+        <p class="eyebrow mono">02</p>
+        <h2 id="s2" class="display">The principles.</h2>
+        <ul class="cs-list"><li><strong>The graph is a mirror.</strong> Everything in it can be rebuilt from Postgres, so it never needs transactions with the main database, and losing it is an inconvenience, not a disaster.</li><li><strong>Postgres first, then sync.</strong> Writes land in Postgres and a queue carries them to the graph. The app never waits on the graph to save something.</li><li><strong>Keep the query language.</strong> If the new store speaks the same Cypher, the app's queries don't have to change.</li></ul>
+      </section>
+      <section class="cs-section" aria-labelledby="s3">
+        <p class="eyebrow mono">03</p>
+        <h2 id="s3" class="display">Five decisions.</h2>
+
+        <article class="cs-decision">
+          <h3><span class="mono">A</span>Swap the engine, not the app.</h3>
+          <p>Running a separate Neo4j instance meant another system to operate. Apache AGE adds openCypher to Postgres, so the graph could live in a database we already knew how to run, while the app kept its queries and its sync worker.</p>
+          <p class="cs-cost"><span class="mono">Cost</span>AGE's Cypher isn't Neo4j's. Every gap in the dialect became something to work around.</p>
+        </article>
+        <article class="cs-decision">
+          <h3><span class="mono">B</span>Spike before committing.</h3>
+          <p>Before migrating, a small spike ran the real queries against AGE. It found four gaps: an update after a merge silently did nothing, two kinds of syntax weren't supported, and one sort didn't work. Each got a workaround before anything moved.</p>
+          <p class="cs-cost"><span class="mono">Why</span>Silent no-ops are the dangerous kind. Better to find them in a spike than in production data.</p>
+        </article>
+        <article class="cs-decision">
+          <h3><span class="mono">C</span>Rebuild from Postgres, then compare.</h3>
+          <p>Instead of exporting from Neo4j, the new graph was rebuilt from the source of truth, and a parity check compared the two before cutover.</p>
+          <p class="cs-cost"><span class="mono">Caught</span>Its first run found memberships of deleted profiles handled differently on each side. The check was the go/no-go gate.</p>
+        </article>
+        <article class="cs-decision">
+          <h3><span class="mono">D</span>Keep a way back.</h3>
+          <p>The old graph stayed available during the cutover, so switching back was a configuration change, not a migration.</p>
+          <p class="cs-cost"><span class="mono">Cost</span>Two graph stores to keep in mind for a while.</p>
+        </article>
+        <article class="cs-decision">
+          <h3><span class="mono">E</span>Move the hot paths to SQL.</h3>
+          <p>As the graph grew, reranking search results by closeness took about ten seconds per result and ran the connection pool dry. I rewrote it as indexed SQL: 3 to 6 milliseconds. The feed's membership check moved to a direct Postgres lookup too.</p>
+          <p class="cs-cost"><span class="mono">Lesson</span>A graph database is great for exploring relationships. For the two or three questions you ask on every request, an index in Postgres usually wins.</p>
+        </article>
+      </section>
+      <section class="cs-section" aria-labelledby="s4">
+        <p class="eyebrow mono">04</p>
+        <h2 id="s4" class="display">The bug that looked like flaky phones.</h2>
+        <div class="cs-body"><p>After the swap, “your spaces” sometimes came back empty on mobile. Not always: only when the graph answered faster than Postgres.</p><p>The cause was small. Postgres lowercases unquoted names, so a column called <code>spaceId</code> came back as <code>spaceid</code>, and the app read <code>undefined</code>. It only showed up when the graph won the race. The fix was to quote names in one central place, so no query could hit it again.</p></div>
+      </section>
+      <section class="cs-section" aria-labelledby="s5">
+        <p class="eyebrow mono">05</p>
+        <h2 id="s5" class="display">How it came together.</h2>
+        <ol class="cs-timeline"><li><time class="mono">Mar 20</time><p>Neo4j set up for the social graph.</p></li><li><time class="mono">Mar 31</time><p>A worker that mirrors every change from Postgres into the graph.</p></li><li><time class="mono">Apr 2</time><p>Search ranks results by how close they are to you in the graph.</p></li><li><time class="mono">Sep 10</time><p>Neo4j swapped for Apache AGE inside Postgres.</p></li><li><time class="mono">Sep 14</time><p>Parity checked and cut over in every environment.</p></li><li><time class="mono">Sep 16</time><p>The lowercase-names bug fixed for good.</p></li><li><time class="mono">Oct 5</time><p>The feed's membership check moved to Postgres.</p></li><li><time class="mono">Oct 28</time><p>Search's graph reranking moved to SQL: ~10s per result to 3–6ms.</p></li></ol>
+      </section>
+      <section class="cs-section" aria-labelledby="s6">
+        <p class="eyebrow mono">06</p>
+        <h2 id="s6" class="display">What I'd do differently.</h2>
+        <ul class="cs-list"><li><strong>Benchmark the hot path, not the engine.</strong> The question was never Neo4j versus AGE. It was which three queries run on every request, and what they need.</li><li><strong>Put the parity check in from day one.</strong> A mirror you can't verify is a mirror you can't trust.</li><li><strong>Start with SQL for anything simple.</strong> Most of what made the app fast in the end was ordinary Postgres with good indexes.</li></ul>
+      </section>
+
+      <footer class="cs-foot">
+        <p class="fine mono">This write-up covers what we did and why. Hosts, schema and data stay inside Vennbee.</p>
+        <div class="cs-foot-links">
+          <a class="btn btn-primary" href="https://vennbee.com" rel="noopener"><img class="vlogo" src="../vennbee.png" alt="" width="18" height="18" />Try Vennbee</a>
+          <a class="btn" href="../#cases">All case studies</a>
+          <a class="btn btn-quiet" href="mailto:aryan@vennbee.com">aryan@vennbee.com</a>
+        </div>
+      </footer>
+    </main>
+
+    <script type="module" src="../src/case.ts"></script>
+  </body>
+</html>

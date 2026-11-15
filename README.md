@@ -41,7 +41,7 @@ npm run preview   # serves dist/
 
 ```
 index.html            page structure and all static copy
-forager/ moderation/ twobrains/ foresight/ camus/
+forager/ moderation/ graph/ twobrains/ foresight/ camus/
                       one case-study page each
 src/
   content.ts          experience, projects, education, stack (edit this first)
