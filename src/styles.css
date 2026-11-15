@@ -751,7 +751,8 @@ strong {
   animation: fill 5200ms linear forwards;
 }
 
-.impact:hover .ix-bar i.run,
+/* Only pauses off screen or in a background tab, never on hover: a hover
+   pause made the ledger look frozen, and stuck on touch screens after a tap. */
 .impact[data-paused] .ix-bar i.run {
   animation-play-state: paused;
 }

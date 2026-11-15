@@ -1,6 +1,6 @@
 // Hero ledger: what I built, measured. Each entry strikes out the old number
 // and rolls the new one in on odometer wheels. The active row's progress bar is
-// a CSS animation; when it ends, the next entry plays. Hovering pauses it.
+// a CSS animation; when it ends, the next entry plays.
 
 type Impact = {
   project: string;
@@ -133,9 +133,14 @@ export function mountImpact(root: HTMLElement, reduced: boolean) {
     if ((e.target as HTMLElement).classList.contains("run")) show((current + 1) % impacts.length);
   });
   // Off screen or in a background tab, the bar (and so the ledger) waits.
-  const sync = (on: boolean) => root.toggleAttribute("data-paused", !on);
-  new IntersectionObserver(([e]) => sync(e.isIntersecting)).observe(root);
-  document.addEventListener("visibilitychange", () => sync(!document.hidden));
+  // Track both conditions; either one alone used to overwrite the other.
+  let onScreen = true;
+  const sync = () => root.toggleAttribute("data-paused", !onScreen || document.hidden);
+  new IntersectionObserver(([e]) => {
+    onScreen = e.isIntersecting;
+    sync();
+  }).observe(root);
+  document.addEventListener("visibilitychange", sync);
 
   // Wait for Pollen before measuring digit widths, or the wheels size to the fallback font.
   const fontsReady = document.fonts?.ready ?? Promise.resolve();
