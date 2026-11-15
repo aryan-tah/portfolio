@@ -22,7 +22,7 @@ Most portfolio sites tell you someone is good at systems. I wanted this one to s
 
 The four numbers next to the diagram (services, connections, edge crossings, duplicates) are counted from the drawing on every frame. They are not typed in. The clean layout's layer order came from a brute-force search over every ordering for the fewest crossings, which got it from 9 down to 3.
 
-**Hybrid search toy.** Three example queries and a slider that blends keyword scoring with semantic scoring, `α · semantic + (1 − α) · keyword`, which is the same shape Vennbee's search uses. Keyword scores are computed live from the text. Semantic scores are precomputed stand-ins, and the page says that too.
+**Forager demo.** Vennbee's search takes Google-style queries over a nested social network. The demo types a real query from Vennbee's labelled eval set ("ex google designers in london", "people in both climbing club and nowhere running", "python devs I vouch for"), shows the structured plan it parses into as chips, then lights the pipeline: parse, validate, keyword, semantic and facts lanes, fuse, graph rerank, permission check.
 
 ## Run it
 
@@ -44,7 +44,7 @@ src/
   main.ts             renders sections, runs the swarm's playback loop
   impact.ts           hero ledger: struck-out old numbers, odometer new ones
   system.ts           Vennbee subsystem diagram in the Work section
-  search.ts           hybrid search toy
+  forager.ts          Forager demo: query, parsed plan, pipeline
   styles.css          tokens, layout, every component
   swarm/
     graph.ts          both architectures, merge notes, crossing counter

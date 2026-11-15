@@ -35,7 +35,7 @@ const modes: Mode[] = [
     key: "search",
     word: "search",
     path: [["ios", "gateway", "search", "postgres"], ["search", "redis"], ["search", "llm"]],
-    note: "Describe a community the way you'd tell a friend. Keyword match and pgvector similarity, blended in one Postgres query.",
+    note: "Forager: Google-style queries over nested communities. Parsed into a validated plan, then keyword, semantic and facts lanes, fused and reranked by graph distance.",
   },
   {
     key: "feed",

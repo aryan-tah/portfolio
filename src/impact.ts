@@ -19,7 +19,7 @@ const impacts: Impact[] = [
   {
     project: "Vennbee",
     value: "160+",
-    line: "sign-ups in a single day for the social app I co-founded. I own its backend: search, feed, moderation and chat.",
+    line: "sign-ups in a single day for the social app I co-founded. I own its backend, including Google-style search across nested communities.",
   },
   {
     project: "TwoBrains",

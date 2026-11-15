@@ -174,7 +174,7 @@
             </div>
             <svg class="system-svg" viewBox="0 0 548 400" data-system aria-hidden="true"></svg>
             <figcaption class="system-note" data-note>
-              Describe a community the way you'd tell a friend. Keyword match and pgvector similarity, blended in one Postgres query.
+              Forager: Google-style queries over nested communities. Parsed into a validated plan, then keyword, semantic and facts lanes, fused and reranked by graph distance.
             </figcaption>
             <span class="crop crop-tl" aria-hidden="true"></span>
             <span class="crop crop-tr" aria-hidden="true"></span>
@@ -183,33 +183,42 @@
           </figure>
         </div>
 
-        <div class="hybrid" aria-labelledby="hybrid-title">
-          <div class="hybrid-copy">
-            <p class="eyebrow mono">One piece of it</p>
-            <h3 id="hybrid-title">Hybrid search, as one slider</h3>
+        <div class="forager" aria-labelledby="forager-title">
+          <div class="forager-copy">
+            <p class="eyebrow mono">Inside Vennbee · Forager</p>
+            <h3 id="forager-title" class="display">Search that reads like Google, inside a nested social network.</h3>
             <p>
-              Keyword search finds “climbing” when you type “climbing”. Describe a community the way you’d describe
-              it to a friend and only vector similarity finds it. Vennbee blends the two in a single Postgres query. Drag
-              the slider to move the blend.
+              Type what you'd type into Google, like “ex google designers in london” or “python devs I vouch for”, and
+              Forager searches people, spaces, posts and threads, scoped to the communities you're in. A model turns
+              the query into a plan. Code checks every limit before anything runs.
             </p>
-            <p class="fine mono">
-              Toy version. Keyword scores are computed live from the text; semantic scores are precomputed.
-            </p>
+            <ul class="forager-points">
+              <li>Nine kinds of facts to filter on (skills, roles, orgs, schools, places, languages and more), each past, present or future.</li>
+              <li>Scopes and edges: one space or several at once, people you vouch for, an author, “people like @maria”.</li>
+              <li>Keyword, semantic and facts lanes, fused, then reranked by how close each result is to you in the graph.</li>
+              <li>Too specific? A relaxation ladder drops one constraint at a time and says which, instead of returning nothing.</li>
+              <li>Runs on its own Postgres kept current by logical replication. Every result is re-checked against permissions before you see it.</li>
+              <li>84 labelled queries gate every parser change in CI.</li>
+            </ul>
           </div>
 
-          <div class="hybrid-ui">
-            <div class="queries" role="radiogroup" aria-label="Example search" data-queries></div>
-            <label class="blend mono">
-              <span>keyword</span>
-              <input type="range" min="0" max="100" value="60" data-alpha aria-label="Blend between keyword and semantic scoring" />
-              <span>semantic</span>
-              <output data-alpha-out>α 0.60</output>
-            </label>
-            <p class="legend mono" aria-hidden="true">
-              <span><i style="background: var(--ink)"></i>keyword share</span>
-              <span><i style="background: var(--accent)"></i>semantic share</span>
-            </p>
-            <ol class="results" data-results></ol>
+          <div class="fdemo">
+            <div class="fbar">
+              <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+              <span class="fq" data-fq aria-hidden="true"></span><span class="fcaret" aria-hidden="true"></span>
+            </div>
+            <div class="fsection">
+              <p class="eyebrow mono">Plan</p>
+              <div class="fchips" data-fchips aria-hidden="true"></div>
+            </div>
+            <div class="fsection">
+              <p class="eyebrow mono">Pipeline</p>
+              <ol class="fstages mono" data-fstages aria-hidden="true"></ol>
+            </div>
+            <p class="fnote" data-fnote aria-hidden="true"></p>
+            <p class="sr-only" aria-live="polite" data-flive></p>
+            <div class="fpicks" role="radiogroup" aria-label="Example search" data-fpicks></div>
+            <p class="fine mono">Queries and parses from Vennbee's search eval set.</p>
           </div>
         </div>
       </section>

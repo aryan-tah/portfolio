@@ -1,6 +1,6 @@
 import "./styles.css";
 import { education, experience, projects, stack } from "./content";
-import { mountSearch } from "./search";
+import { mountForager } from "./forager";
 import { mountImpact } from "./impact";
 import { mountSystem } from "./system";
 import { cleanNodes, messyNodes } from "./swarm/graph";
@@ -350,5 +350,5 @@ renderBackground();
 mountClock();
 mountImpact($("[data-impact]"), reduced);
 mountSystem($("[data-vb]"), reduced);
-mountSearch($(".hybrid"));
+mountForager($(".forager"), reduced);
 mountSwarm();

@@ -31,7 +31,8 @@ export const experience: Role[] = [
     points: [
       "A social app that ranks posts by how relevant they are to your groups, not by how viral they are. Two founders, seven TestFlight builds so far.",
       "I own the backend: search, feed, moderation and real-time chat.",
-      "Search takes a plain-English description of a community and blends keyword matching with pgvector similarity, so nobody has to guess the right keyword.",
+      "Built Forager, Vennbee's search: Google-style queries over a nested social graph. A model parses each query into a validated plan of facts, community scopes, vouches and exclusions; keyword, semantic and facts lanes are fused and reranked by graph proximity.",
+      "Forager runs on its own Postgres kept current by logical replication, falls back to the primaries when it lags, and re-checks every result against permissions before it's shown.",
       "Moderation had to pass Apple's rules for user-generated content: a word filter, a 41.9K-domain link blocklist, AI scoring for text, images, video and audio, and strikes with appeals.",
       "The feed learns from likes, replies and reposts. Referral links and a leaderboard brought in 160+ sign-ups in a single day.",
     ],
