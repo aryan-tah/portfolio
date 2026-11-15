@@ -1,6 +1,6 @@
 # Aryan Tah · portfolio
 
-My personal site. I'm a backend engineer and co-founder of [Vennbee](https://vennbee.com), where I own search, feed, moderation and real-time chat.
+My personal site. I'm co-founder and forward deployed engineer (full stack) at [Vennbee](https://vennbee.com), where I own search, feed, moderation and real-time chat.
 
 **Live:** [aryantah.com](https://aryantah.com)
 

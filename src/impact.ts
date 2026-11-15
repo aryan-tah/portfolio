@@ -4,6 +4,7 @@
 
 type Impact = {
   project: string;
+  logo?: string;
   old?: string; // struck through
   value: string; // rolls in
   line: string;
@@ -11,15 +12,16 @@ type Impact = {
 
 const impacts: Impact[] = [
   {
+    project: "Vennbee",
+    logo: "./vennbee.png",
+    value: "160+",
+    line: "sign-ups in a single day for the social app I co-founded. I own its backend, including Google-style search across nested communities.",
+  },
+  {
     project: "School voting system",
     old: "4 days",
     value: "5 min",
     line: "to count a school election. 1,000+ students voted in one day on 30 lab computers, replacing 15 years of paper ballots.",
-  },
-  {
-    project: "Vennbee",
-    value: "160+",
-    line: "sign-ups in a single day for the social app I co-founded. I own its backend, including Google-style search across nested communities.",
   },
   {
     project: "TwoBrains",
@@ -86,7 +88,7 @@ export function mountImpact(root: HTMLElement, reduced: boolean) {
       (m, i) => `<li>
         <button type="button" data-i="${i}">
           <span class="ix-n mono">${String(i + 1).padStart(2, "0")}</span>
-          <span class="ix-name">${m.project}</span>
+          <span class="ix-name">${m.logo ? `<img class="vlogo" src="${m.logo}" alt="" width="16" height="16" />` : ""}${m.project}</span>
           <span class="ix-val mono">${m.value}</span>
           <span class="ix-bar" aria-hidden="true"><i></i></span>
         </button>
@@ -113,7 +115,7 @@ export function mountImpact(root: HTMLElement, reduced: boolean) {
 
     stage.classList.remove("in");
     void stage.offsetWidth;
-    kicker.textContent = m.project;
+    kicker.innerHTML = `${m.logo ? `<img class="vlogo" src="${m.logo}" alt="" width="14" height="14" />` : ""}${m.project}`;
     oldEl.querySelector("span")!.textContent = m.old ?? "";
     oldEl.toggleAttribute("hidden", !m.old);
     setValue(newEl, m.value, reduced);

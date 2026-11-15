@@ -2,9 +2,9 @@
 
 export const profile = {
   name: "Aryan Tah",
-  role: "Backend engineer",
+  role: "Forward Deployed Engineer (Full Stack)",
   location: "Riverside, CA",
-  email: "aryan.tah7@gmail.com",
+  email: "aryan@vennbee.com",
   links: {
     github: "https://github.com/aryan-tah",
     linkedin: "https://www.linkedin.com/in/aryan-tah-8b5916221/",
@@ -16,6 +16,8 @@ export const profile = {
 export type Role = {
   org: string;
   title: string;
+  href?: string;
+  logo?: string;
   place: string;
   dates: string;
   points: string[];
@@ -25,7 +27,9 @@ export type Role = {
 export const experience: Role[] = [
   {
     org: "Vennbee",
-    title: "Co-founder, backend",
+    title: "Co-founder, Forward Deployed Engineer (Full Stack)",
+    href: "https://vennbee.com",
+    logo: "./vennbee.png",
     place: "Riverside, CA",
     dates: "Jan 2026 to now",
     points: [
