@@ -17,6 +17,7 @@ export type Role = {
   org: string;
   title: string;
   href?: string;
+  /** A square mark shown before the org name. */
   logo?: string;
   place: string;
   dates: string;
@@ -45,6 +46,8 @@ export const experience: Role[] = [
   {
     org: "UCR Information Technology Solutions",
     title: "Student Information System intern",
+    href: "https://its.ucr.edu",
+    logo: "./ucr.svg",
     place: "Riverside, CA",
     dates: "Nov 2024 to now",
     points: [

@@ -228,6 +228,11 @@ body::before {
   vertical-align: -0.24em;
 }
 
+/* Marks that aren't app icons keep their own shape. */
+.vlogo.flat {
+  border-radius: 0;
+}
+
 /* Inline so it sits on the same baseline as the text around it. */
 .vlink {
   text-decoration: none;

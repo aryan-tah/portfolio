@@ -54,6 +54,8 @@ src/
 public/
   favicon.svg
   fonts/              Pollen, subset to Latin, and its OFL license
+  vennbee.png         Vennbee app icon
+  ucr.svg             UC Riverside mark (public domain, via Wikimedia Commons)
   og.png              social preview, captured from the hero
 ```
 
