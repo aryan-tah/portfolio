@@ -712,16 +712,19 @@ export class SwarmScene {
     const drawLabel = (text: string, alpha: number, color: string) => {
       if (alpha <= 0.02) return;
       ctx.globalAlpha = alpha;
+      const [tx, ty] = this.vertical ? [x, y + size + 5] : [x + size + 7, y];
+      ctx.textAlign = this.vertical ? "center" : "left";
+      ctx.textBaseline = this.vertical ? "top" : "middle";
+      // A plate in the page color behind the whole label, so an edge running
+      // under it never shows between the letters or words.
+      const w = ctx.measureText(text).width;
+      const h = fontSize + 4;
+      const px = this.vertical ? tx - w / 2 - 3 : tx - 3;
+      const py = this.vertical ? ty - 2 : ty - h / 2;
+      ctx.fillStyle = colors.paper;
+      ctx.fillRect(px, py, w + 6, h);
       ctx.fillStyle = color;
-      if (this.vertical) {
-        ctx.textAlign = "center";
-        ctx.textBaseline = "top";
-        ctx.fillText(text, x, y + size + 5);
-      } else {
-        ctx.textAlign = "left";
-        ctx.textBaseline = "middle";
-        ctx.fillText(text, x + size + 7, y);
-      }
+      ctx.fillText(text, tx, ty);
     };
     const tangledLabelAlpha = this.vertical ? 0 : 0.85;
     // A merging node's label goes quiet once it's picked up, so converging labels don't pile up.
