@@ -84,7 +84,7 @@ function renderWork() {
         <div>
           <h3>${
             r.href
-              ? `<a class="vlink" href="${esc(r.href)}" rel="noopener">${r.logo ? `<img class="vlogo" src="${esc(r.logo)}" alt="" width="22" height="22" />` : ""}${esc(r.org)}</a>`
+              ? `<a class="vlink" href="${esc(r.href)}" rel="noopener">${r.logo ? `<img class="vlogo${r.logo.endsWith(".svg") ? " flat" : ""}" src="${esc(r.logo)}" alt="" width="22" height="22" />` : ""}${esc(r.org)}</a>`
               : esc(r.org)
           }<span class="role-title"> · ${esc(r.title)}</span></h3>
           <ul>${r.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>
