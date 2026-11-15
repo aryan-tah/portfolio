@@ -2,15 +2,17 @@
 
 My personal site. I'm a backend engineer and co-founder of [Vennbee](https://vennbee.com), where I own search, feed, moderation and real-time chat.
 
-**Live:** [aryan-tah.github.io/portfolio](https://aryan-tah.github.io/portfolio/)
+**Live:** [aryantah.com](https://aryantah.com)
 
-![The swarm rebuild section, partway through](docs/swarm-tangle.png)
+![The hero: a rolling headline beside a live diagram of Vennbee's backend](docs/hero.png)
 
 Most portfolio sites tell you someone is good at systems. I wanted this one to show it, so the centerpiece is a diagram that rebuilds itself while you watch. It's built from scratch in TypeScript and Canvas 2D, with no framework and about 15 KB of gzipped JavaScript.
 
 ## What's on the page
 
 **Hero.** "I build the search behind Vennbee." The highlighted word rolls through the four subsystems I own (search, feed, moderation, real-time chat), and the diagram beside it lights that subsystem's request path in Vennbee's backend, with a line on how it works. Click a subsystem to hold it. Underneath, a row of real numbers: TestFlight builds, waitlist size, blocklist size, neurons simulated, open-source stars.
+
+![The swarm rebuild, partway through](docs/swarm-tangle.png)
 
 **Swarm rebuild.** One screen. Once the diagram is fully in view, a 6.5-second rebuild plays on its own. It starts as a deliberately tangled v0 backend: 39 services, two search services the client has to merge itself, four copies of the moderation service, a polling fallback nobody turned off. A swarm of agents, drawn as multiplayer cursors, flies in and drags each service where it belongs: duplicates into the service that should own them, survivors into a layered design with 14 services. Connections that matter stretch along with the drag and turn into clean edges; the rest get cut the moment their service is picked up. Then traffic starts moving. The traffic keeps flowing after the rebuild ends, and a button pauses or replays it. Hover any node to see what was wrong with it or what it does now.
 
@@ -46,7 +48,7 @@ src/
     scene.ts          canvas renderer and the rebuild timeline
 public/
   favicon.svg
-  og.png              social preview, captured from the live swarm
+  og.png              social preview, captured from the hero
 ```
 
 A few decisions worth knowing about:
@@ -75,7 +77,13 @@ Fork it, then:
 
 ## Deploy
 
-Pushing to `main` builds the site and publishes it to GitHub Pages through `.github/workflows/deploy.yml`. Vite's `base` is `./`, so the build works at a project URL or on a custom domain without changes.
+The live site runs on [Railway](https://railway.com) from the `Dockerfile`: Node builds the site, then [Caddy](https://caddyserver.com) serves `dist/` with compression, long-lived caching for hashed assets, and no-cache on the page itself. To ship from a checkout:
+
+```bash
+railway up
+```
+
+Pushing to `main` also publishes a copy to GitHub Pages through `.github/workflows/deploy.yml`. Vite's `base` is `./`, so the same build works on either.
 
 ## License
 
