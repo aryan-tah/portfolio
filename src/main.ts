@@ -1,5 +1,6 @@
 import "./styles.css";
 import { education, experience, projects, stack } from "./content";
+import { applyBackdrop, watchBackdropResize } from "./backdrop";
 import { mountForager } from "./forager";
 import { mountImpact } from "./impact";
 import { mountSystem } from "./system";
@@ -344,6 +345,8 @@ function mountSwarm() {
 // ---------------------------------------------------------------------------
 
 mountPalette();
+applyBackdrop();
+watchBackdropResize();
 renderWork();
 renderProjects();
 renderBackground();
