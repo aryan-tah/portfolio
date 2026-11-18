@@ -82,6 +82,33 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    name: "proxshield",
+    line: "Keeps personal data and injected instructions out of LLM calls.",
+    detail:
+      "A self-hosted firewall between apps and OpenAI or Anthropic. Names, emails, cards and keys become placeholders before the model sees them and come back in the reply, even when a placeholder arrives split across streamed chunks. Tool results are also scored a few sentences at a time, which took detection of injections hidden in documents from 10% to 51%. It answers Lakera Guard's and LLM Guard's APIs, so clients switch by URL. The benchmark reports false alarms too: the model LLM Guard shipped blocked 13 of 50 ordinary support messages, so the default is Prompt Guard 2, which blocked 2.",
+    stack: ["TypeScript", "Hono", "ONNX Runtime", "Docker"],
+    year: "2026",
+    href: "https://github.com/aryan-tah/proxshield",
+  },
+  {
+    name: "openspective",
+    line: "Google's Perspective API shuts down Dec 31. Same API, your server.",
+    detail:
+      "A drop-in replacement for the toxicity API that Coral, Discourse and research benchmarks call. Same endpoints, JSON, span offsets, errors and discovery document, so Google's own Python client works unchanged. Seven attributes in English and toxicity in six more languages on open Detoxify models, about 20 ms per comment on a laptop CPU.",
+    stack: ["Python", "FastAPI", "PyTorch", "Docker"],
+    year: "2026",
+    href: "https://github.com/aryan-tah/openspective",
+  },
+  {
+    name: "pgdeadbolt",
+    line: "Stops AI agents from shipping migrations that lock your tables.",
+    detail:
+      "16 rules built on Postgres's own parser, each naming the lock a migration takes and the safe rewrite. A rehearse mode runs the migration on a seeded Postgres while probe connections measure how long writes were actually blocked: on a 1M-row table the fixes cut that from 4.58 s to 2 ms. Ships as a CLI, a GitHub Action, and a Claude Code plugin that stops the agent before the migration lands.",
+    stack: ["TypeScript", "PostgreSQL", "Claude Code"],
+    year: "2026",
+    href: "https://github.com/aryan-tah/pgdeadbolt",
+  },
+  {
     name: "TwoBrains",
     line: "Delete a real fly brain, one neuron at a time.",
     detail:
